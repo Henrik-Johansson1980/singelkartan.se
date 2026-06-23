@@ -1,23 +1,23 @@
 # Singelkartan — Roadmap
 
-## Phase 1 — Foundation (current)
+## Phase 1 — Foundation ✅ mostly done
 > Goal: working toplist on seeded data, all quality gates green
 
-- [ ] Tooling: `rector.php`, PHPStan → level 8, composer scripts `stan` + `refactor`
-- [ ] Enums: `Sex`, `HouseholdStatus`, `RegionLevel`
-- [ ] Migrations: `regions`, `demographics`, `postal_lookups`, `score_cache`
-- [ ] Models: `Region`, `Demographic`, `PostalLookup`, `ScoreCache` (typed, with casts)
-- [ ] Factories + DatabaseSeeder (50 regions, realistic demographic data)
-- [ ] DTOs: `JsonStatDataset`, `ScbObservation`, `ScbQueryPayload` (SCB PxWebApi 2 / JSON-stat2)
-- [ ] `ScbClient` — typed HTTP client (retry, timeout, chunk pagination for 150k limit)
-- [ ] `SingleScoreService` — single ratio, Bayesian shrinkage, min-count threshold
-- [ ] `config/singelkartan.php` — SCB base URL, min_count, shrinkage K, sync year
-- [ ] Artisan command `singelkartan:sync`
-- [ ] Livewire `TargetForm` — sex toggle + dual-range age slider, wire:model.live
-- [ ] Livewire `Leaderboard` — ranked top-10 list with score bars, medal badges
-- [ ] Hero landing page (welcome.blade.php) wired to Livewire components
+- [x] Tooling: PHPStan → level 8, composer script `stan` added *(rector not installed — skipped)*
+- [x] Enums: `Sex`, `HouseholdStatus`, `RegionLevel`
+- [x] Migrations: `regions`, `demographics`, `postal_lookups`, `score_cache`
+- [x] Models: `Region`, `Demographic`, `PostalLookup`, `ScoreCache` (typed, with casts)
+- [x] Factories + DatabaseSeeder (30 regions, realistic demographic data + score cache)
+- [x] DTOs: `JsonStatDataset`, `JsonStatDimension`, `ScbObservation`, `ScbQueryPayload`
+- [x] `ScbClient` — typed HTTP client (retry, timeout, chunk pagination for 150k limit)
+- [x] `SingleScoreService` — single ratio, Bayesian shrinkage, min-count threshold
+- [x] `config/singelkartan.php` — SCB base URL, min_count, shrinkage K, sync year
+- [x] Artisan command `singelkartan:sync` (with `--dry-run`)
+- [x] Livewire `TargetForm` — sex toggle + dual-range age slider, wire:model.live
+- [x] Livewire `Leaderboard` — ranked top-10 list with score bars, medal badges
+- [x] Hero landing page (welcome.blade.php) wired to Livewire components
+- [x] `ROADMAP.md` (this file)
 - [ ] Pest tests: `SingleScoreServiceTest` (ratio, shrinkage, min-count, edge cases) + `LeaderboardTest`
-- [ ] `ROADMAP.md` (this file)
 
 ## Phase 2 — Interactive Map
 > Goal: choropleth Sverigekarta synced with the toplist
