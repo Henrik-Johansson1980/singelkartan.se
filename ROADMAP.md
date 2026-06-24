@@ -19,7 +19,7 @@
 - [x] Hero landing page (welcome.blade.php) wired to Livewire components
 - [x] `ROADMAP.md` (this file)
 - [x] Pest tests: `SingleScoreServiceTest` (ratio, shrinkage, min-count, edge cases) + `LeaderboardTest`
-- [x] `composer run format && php artisan test --compact` green → commit
+- [x] Commit
 
 ## Phase 2 — Interactive Map
 > Goal: choropleth Sverigekarta synced with the toplist
@@ -30,7 +30,7 @@
 - [ ] Min-count areas greyed out
 - [ ] Hover/click: tooltip with score, single ratio, count
 - [ ] Synced hover between toplist rows and map regions
-- [ ] `composer run format && php artisan test --compact` green → commit
+- [ ] Commit
 
 ## Phase 3 — Sharable Result Card
 > Goal: viral sharing with auto-generated OG images
@@ -39,7 +39,7 @@
 - [ ] OG-image generation (Browsershot or Blade → image route)
 - [ ] Social share buttons (Facebook, X/Twitter, copy link)
 - [ ] Auto-generated page title + meta tags per search
-- [ ] `composer run format && php artisan test --compact` green → commit
+- [ ] Commit
 
 ## Phase 4 — DeSO Granularity
 > Goal: finer-grained map using DeSO areas
@@ -47,7 +47,7 @@
 - [ ] Fetch `HushallDesoTyp` from SCB API (grov singel-andel per DeSO, no sex/age breakdowns)
 - [ ] GeoJSON for DeSO boundaries
 - [ ] Level toggle: Kommun ↔ DeSO in the UI
-- [ ] `composer run format && php artisan test --compact` green → commit
+- [ ] Commit
 
 ## Phase 5 — Premium / White-label Stub
 > Goal: lay groundwork for future monetisation
@@ -55,7 +55,7 @@
 - [ ] Feature flag `SINGELKARTAN_PREMIUM_MODE` in config
 - [ ] White-label view: hide Singelkartan branding, show custom logo slot
 - [ ] Route/middleware stub for premium access (no payment in MVP)
-- [ ] `composer run format && php artisan test --compact` green → commit
+- [ ] Commit
 
 ---
 
