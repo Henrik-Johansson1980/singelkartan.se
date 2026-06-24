@@ -171,4 +171,21 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Run tests: `php artisan test --compact` or filter: `php artisan test --compact --filter=testName`.
 - Do NOT delete tests without approval.
 
+
+=== commits ===
+
+## Commits
+
+Before every `git commit`, you MUST:
+
+1. Update `ROADMAP.md` — mark completed items `[x]` and phases `✅`.
+2. Run the full format pipeline and test suite — both must be fully green:
+
+```bash
+composer run format
+php artisan test --compact
+```
+
+Never bypass this with `--no-verify`, `@phpstan-ignore`, skipped tests, or any other suppression. If either step fails, fix the underlying issue and re-run before committing.
+
 </laravel-boost-guidelines>
