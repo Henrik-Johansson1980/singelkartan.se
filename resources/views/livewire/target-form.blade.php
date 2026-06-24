@@ -41,6 +41,31 @@
         @endif
     </div>
 
+    {{-- Region search --}}
+    <div x-data="{ search: '' }" class="mb-6">
+        <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+            Sök {{ $level === 'deso' ? 'DeSO-område' : 'kommun' }}
+        </label>
+        <div class="relative">
+            <x-heroicon-o-magnifying-glass class="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-surface-400 pointer-events-none" />
+            <input
+                type="search"
+                x-model="search"
+                @input="$dispatch('singelkartan:search', { query: search })"
+                placeholder="{{ $level === 'deso' ? 'T.ex. Södermalm' : 'T.ex. Stockholm' }}…"
+                class="w-full rounded-xl border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 pl-8 pr-8 py-2 text-sm text-surface-900 dark:text-surface-100 placeholder:text-surface-400 focus:outline-none focus:ring-2 focus:ring-brand-400"
+            />
+            <button
+                x-show="search !== ''"
+                @click="search = ''; $dispatch('singelkartan:search', { query: '' })"
+                type="button"
+                class="absolute right-2 top-1/2 -translate-y-1/2 text-surface-400 hover:text-surface-600"
+            >
+                <x-heroicon-o-x-mark class="h-4 w-4" />
+            </button>
+        </div>
+    </div>
+
     {{-- Sex + age filters (hidden in DeSO mode) --}}
     @if ($level === 'kommun')
         {{-- Sex selector --}}

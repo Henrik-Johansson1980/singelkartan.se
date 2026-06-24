@@ -63,6 +63,8 @@ export default function choroplethMap() {
         popup: null,
         selectedCode: null,
         currentLevel: 'kommun',
+        initialZoom: null,
+        isZoomed: false,
 
         async init() {
             this.scores = JSON.parse(this.$el.dataset.mapData || '{}')
@@ -79,25 +81,33 @@ export default function choroplethMap() {
 
             this.drawLayer(this.currentLevel)
             this.map.fitBounds(this.layer.getBounds(), { padding: [4, 4] })
+            this.initialZoom = this.map.getZoom()
 
-            // Livewire updates mapDataJson → redraw choropleth colours
-            this.$watch('$wire.mapDataJson', value => {
-                this.scores = JSON.parse(value)
-                this.breaks = computeBreaks(this.scores, PALETTE.length)
-                this.layer?.setStyle(f => this.styleFor(f, this.currentLevel))
+            this.map.on('zoomend', () => {
+                this.isZoomed = this.map.getZoom() > this.initialZoom
             })
 
-            // Livewire updates level → reload GeoJSON and redraw
-            this.$watch('$wire.level', async newLevel => {
-                if (newLevel === this.currentLevel) return
-                this.selectedCode = null
-                this.popup?.remove()
-                this.popup = null
-                this.currentLevel = newLevel
-                await this.loadGeojson(newLevel)
-                this.layer?.remove()
-                this.drawLayer(newLevel)
-                this.map.fitBounds(this.layer.getBounds(), { padding: [4, 4] })
+            // Server dispatches map-updated after each filter change
+            this.$wire.on('map-updated', async ({ mapData, level }) => {
+                const levelChanged = level !== this.currentLevel
+
+                this.scores = JSON.parse(mapData)
+                this.breaks = computeBreaks(this.scores, PALETTE.length)
+
+                if (levelChanged) {
+                    this.selectedCode = null
+                    this.popup?.remove()
+                    this.popup = null
+                    this.currentLevel = level
+                    await this.loadGeojson(level)
+                    this.layer?.remove()
+                    this.drawLayer(level)
+                    this.map.fitBounds(this.layer.getBounds(), { padding: [4, 4] })
+                    this.initialZoom = this.map.getZoom()
+                    this.isZoomed = false
+                } else {
+                    this.layer?.setStyle(f => this.styleFor(f, this.currentLevel))
+                }
             })
 
             // Toplist row hover → highlight region on map (skip selected region reset)
@@ -129,6 +139,11 @@ export default function choroplethMap() {
             this.map.on('popupclose', () => {
                 if (this.selectedCode) this.clearSelection()
             })
+        },
+
+        resetView() {
+            this.clearSelection()
+            this.map.fitBounds(this.layer.getBounds(), { padding: [4, 4] })
         },
 
         selectRegion(code) {
@@ -211,6 +226,15 @@ export default function choroplethMap() {
                     l.on({
                         mouseover: e => this.onHover(e, feature, level),
                         mouseout:  e => this.onHoverOut(e),
+                        click:     () => {
+                            const prop = CODE_PROP[level]
+                            const code = feature.properties[prop]
+                            if (code === this.selectedCode) {
+                                this.clearSelection()
+                            } else {
+                                this.selectRegion(code)
+                            }
+                        },
                     })
                 },
             }).addTo(this.map)

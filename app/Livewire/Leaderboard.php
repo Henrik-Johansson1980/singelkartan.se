@@ -48,6 +48,8 @@ class Leaderboard extends Component
         $this->ageMax = $ageMax;
 
         $this->mapDataJson = $this->buildMapDataJson();
+
+        $this->dispatch('map-updated', mapData: $this->mapDataJson, level: $this->level);
     }
 
     /** @return Collection<int, ScoreCache> */

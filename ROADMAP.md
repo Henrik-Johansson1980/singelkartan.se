@@ -96,3 +96,13 @@
 - [x] Commit
 
 > **Plan:** `/home/henrik/.claude/plans/the-datasets-does-not-tranquil-river.md`
+
+## Phase 8 — Map reactivity, UX improvements ✅
+> Goal: live map updates on filter change + usability features
+
+- [x] Fix map not updating on filter change: replace broken `$watch('$wire.*')` with `$wire.on('map-updated', ...)` (correct Livewire v4 API); `Leaderboard` dispatches `map-updated` event after each filter change
+- [x] Fix "Alla" sex filter returning no data: `queryDemographics` now aggregates male + female rows when `Sex::All` is selected (no `sex='all'` rows exist in demographics)
+- [x] Zoom-reset button: floats over map, appears only when zoomed past initial Sweden view, resets to full bounds
+- [x] Region search field in filters panel (between level toggle and sex/age filters): client-side Alpine filter via `singelkartan:search` window event, no Livewire round-trip
+- [x] DeSO info popover: ℹ icon in leaderboard header (DeSO mode only) explaining the code format (kommunkod + tätortstyp + löpnummer)
+- [x] Commit

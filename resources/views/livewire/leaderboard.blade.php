@@ -14,6 +14,32 @@
                     <x-heroicon-o-heart class="h-5 w-5 text-brand-500" />
                     @if ($this->isDesoMode())
                         Topp {{ $topRegions->count() }} singeltätaste DeSO-områden
+                        <span x-data="{ open: false }" class="relative inline-flex items-center">
+                            <button
+                                @click="open = !open"
+                                @click.outside="open = false"
+                                type="button"
+                                class="text-surface-400 hover:text-brand-500 transition-colors cursor-pointer"
+                                aria-label="Vad är DeSO?"
+                            >
+                                <x-heroicon-o-information-circle class="h-4 w-4" />
+                            </button>
+                            <div
+                                x-show="open"
+                                x-cloak
+                                class="absolute left-0 top-6 z-50 w-72 rounded-xl bg-white dark:bg-surface-800 shadow-lg border border-surface-200 dark:border-surface-700 p-4 text-sm text-surface-700 dark:text-surface-300 font-normal"
+                            >
+                                <p class="font-semibold text-surface-900 dark:text-surface-100 mb-1">Vad är DeSO?</p>
+                                <p>DeSO (Demografiska statistikområden) är SCB:s indelning av Sverige i ~5&nbsp;700 jämförbara småområden med 700–2&nbsp;700 invånare vardera.</p>
+                                <p class="mt-2 font-semibold text-surface-900 dark:text-surface-100">Vad betyder koden?</p>
+                                <p class="mt-0.5">T.ex. <code class="font-mono bg-surface-100 dark:bg-surface-700 rounded px-1">1780C1321</code>:</p>
+                                <ul class="mt-1 list-disc list-inside space-y-0.5">
+                                    <li><code class="font-mono">1780</code> = kommunkod (Värmdö)</li>
+                                    <li><code class="font-mono">C</code> = tätortstyp (A=storstad, B=stad, C=tätort, D=landsbygd)</li>
+                                    <li><code class="font-mono">1321</code> = löpnummer inom kommunen</li>
+                                </ul>
+                            </div>
+                        </span>
                     @else
                         Topp {{ $topRegions->count() }} singeltätaste kommuner
                     @endif
@@ -36,20 +62,37 @@
                     x-data="choroplethMap"
                     data-map-data="{{ $mapDataJson }}"
                     data-map-level="{{ $level }}"
-                    class="md:w-3/5 shrink-0 border-b md:border-b-0 md:border-r border-surface-200 dark:border-surface-700"
+                    class="relative md:w-3/5 shrink-0 border-b md:border-b-0 md:border-r border-surface-200 dark:border-surface-700"
                 >
                     <div
                         x-ref="mapEl"
                         class="h-72 md:h-full"
                     ></div>
+
+                    {{-- Zoom-reset button, appears after zooming into a kommun --}}
+                    <button
+                        x-show="isZoomed"
+                        x-cloak
+                        @click="resetView()"
+                        type="button"
+                        class="absolute top-2 right-10 z-[1000] flex items-center gap-1 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-600 shadow px-2.5 py-1 text-xs font-medium text-surface-700 dark:text-surface-200 hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors"
+                    >
+                        <x-heroicon-o-arrow-uturn-left class="h-3 w-3" />
+                        Zooma ut
+                    </button>
                 </div>
 
                 {{-- Toplist --}}
-                <div class="flex-1 min-w-0 min-h-0 flex flex-col">
+                <div
+                    x-data="{ search: '' }"
+                    @singelkartan:search.window="search = $event.detail.query"
+                    class="flex-1 min-w-0 min-h-0 flex flex-col"
+                >
                     <ol class="divide-y divide-surface-100 dark:divide-surface-700/50 flex-1 overflow-y-auto">
                         @foreach ($topRegions as $index => $entry)
                             <li
                                 wire:key="region-{{ $entry->id }}"
+                                x-show="search === '' || '{{ addslashes($entry->region->name ?? '') }}'.toLowerCase().includes(search.toLowerCase())"
                                 x-on:singelkartan:map-hover.window="const on = $event.detail.code === '{{ $entry->region->code }}'; $el.classList.toggle('!bg-surface-100', on); $el.classList.toggle('dark:!bg-surface-700/50', on);"
                                 x-on:singelkartan:map-select.window="const sel = $event.detail.code === '{{ $entry->region->code }}'; $el.classList.toggle('!bg-brand-50', sel); $el.classList.toggle('dark:!bg-brand-900/20', sel); $el.classList.toggle('ring-1', sel); $el.classList.toggle('ring-brand-300', sel); $el.classList.toggle('dark:ring-brand-700', sel);"
                                 @mouseover="$dispatch('singelkartan:list-hover', { code: '{{ $entry->region->code }}' })"

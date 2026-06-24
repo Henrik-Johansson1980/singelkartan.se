@@ -139,7 +139,7 @@ class SingleScoreService
     {
         $year = (int) config('singelkartan.sync_year');
 
-        return DB::table('demographics')
+        $query = DB::table('demographics')
             ->select([
                 'region_id',
                 DB::raw('SUM(CASE WHEN household_status = ? THEN `count` ELSE 0 END) as single_count'),
@@ -147,10 +147,16 @@ class SingleScoreService
             ])
             ->addBinding(HouseholdStatus::SinglePerson->value, 'select')
             ->where('year', $year)
-            ->where('sex', $sex->value)
             ->where('age_min', '>=', $ageMin)
             ->where('age_max', '<=', $ageMax)
-            ->groupBy('region_id')
-            ->get();
+            ->groupBy('region_id');
+
+        if ($sex === Sex::All) {
+            $query->whereIn('sex', [Sex::Male->value, Sex::Female->value]);
+        } else {
+            $query->where('sex', $sex->value);
+        }
+
+        return $query->get();
     }
 }
