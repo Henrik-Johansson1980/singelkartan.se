@@ -176,7 +176,10 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 ## Commits
 
-Before every `git commit`, you MUST run the full format pipeline and test suite. Both must be fully green — no errors, no warnings, no suppressions:
+Before every `git commit`, you MUST:
+
+1. Update `ROADMAP.md` — mark completed items `[x]` and phases `✅`.
+2. Run the full format pipeline and test suite — both must be fully green:
 
 ```bash
 composer run format

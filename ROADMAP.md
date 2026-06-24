@@ -18,19 +18,20 @@
 - [x] Livewire `Leaderboard` — ranked top-10 list with score bars, medal badges
 - [x] Hero landing page (welcome.blade.php) wired to Livewire components
 - [x] `ROADMAP.md` (this file)
-- [x] Pest tests: `SingleScoreServiceTest` (ratio, shrinkage, min-count, edge cases) + `LeaderboardTest`
+- [x] Pest tests: `SingleScoreServiceTest` (ratio, shrinkage, min-count, edge cases) + `LeaderboardTest` + `TargetFormTest`
+- [x] Hard age bounds (18–80) centralised in `config/singelkartan.php`
 - [x] Commit
 
-## Phase 2 — Interactive Map
+## Phase 2 — Interactive Map ✅
 > Goal: choropleth Sverigekarta synced with the toplist
 
-- [ ] GeoJSON for Swedish kommuner (SCB geodata, CC0)
-- [ ] Leaflet integration in Leaderboard (`wire:ignore` for the map DOM node)
-- [ ] Choropleth colouring (YlOrRd / RdPu, 5–6 quantile classes)
-- [ ] Min-count areas greyed out
-- [ ] Hover/click: tooltip with score, single ratio, count
-- [ ] Synced hover between toplist rows and map regions
-- [ ] Commit
+- [x] GeoJSON for Swedish kommuner (SCB geodata, CC0) — `public/geojson/kommuner.geojson`, 290 features
+- [x] Leaflet integration in Leaderboard (`wire:ignore` for the map DOM node)
+- [x] Choropleth colouring (6 quantile classes, pink palette)
+- [x] Min-count areas greyed out
+- [x] Hover/click: tooltip with score, single ratio, count
+- [x] Synced hover between toplist rows and map regions
+- [x] Commit
 
 ## Phase 3 — Sharable Result Card
 > Goal: viral sharing with auto-generated OG images
