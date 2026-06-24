@@ -26,7 +26,7 @@ This application is a Laravel application and its main Laravel ecosystems packag
 
 ## Skills Activation
 
-This project has domain-specific skills available in `**/skills/**`. You MUST activate the relevant skill BEFORE starting any work in that domain — not after problems appear. Load all applicable skills at the beginning of the task, not mid-way through.
+This project has domain-specific skills available in `**/skills/**`. You MUST activate the relevant skill whenever you work in that domain—don't wait until you're stuck.
 
 ## Conventions
 
@@ -170,22 +170,5 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - The `{name}` argument should not include the test suite directory. Use `php artisan make:test --pest SomeFeatureTest` instead of `php artisan make:test --pest Feature/SomeFeatureTest`.
 - Run tests: `php artisan test --compact` or filter: `php artisan test --compact --filter=testName`.
 - Do NOT delete tests without approval.
-
-
-=== commits ===
-
-## Commits
-
-Before every `git commit`, you MUST:
-
-1. Update `ROADMAP.md` — mark completed items `[x]` and phases `✅`.
-2. Run the full format pipeline and test suite — both must be fully green:
-
-```bash
-composer run format
-php artisan test --compact
-```
-
-Never bypass this with `--no-verify`, `@phpstan-ignore`, skipped tests, or any other suppression. If either step fails, fix the underlying issue and re-run before committing.
 
 </laravel-boost-guidelines>
