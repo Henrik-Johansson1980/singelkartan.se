@@ -59,13 +59,14 @@
 - [x] `choropleth.js` lazy-loads `deso.geojson` on toggle; watches `$wire.level`, redraws with correct code property
 - [x] Commit
 
-## Phase 5 — Premium / White-label Stub
+## Phase 5 — Premium / White-label Stub ✅
 > Goal: lay groundwork for future monetisation
 
-- [ ] Feature flag `SINGELKARTAN_PREMIUM_MODE` in config
-- [ ] White-label view: hide Singelkartan branding, show custom logo slot
-- [ ] Route/middleware stub for premium access (no payment in MVP)
-- [ ] Commit
+- [x] `SINGELKARTAN_PREMIUM_MODE` + `SINGELKARTAN_PREMIUM_TOKEN` in config and `.env.example`
+- [x] `RequiresPremium` middleware — passes through when `premium_mode=false`; validates Bearer/query token when enabled
+- [x] `resources/views/layouts/white-label.blade.php` — no Singelkartan branding, `$logo`/`$title`/`$head`/`$scripts` slots
+- [x] `GET /embed` route guarded by `RequiresPremium`, renders white-label layout
+- [x] Commit
 
 ---
 

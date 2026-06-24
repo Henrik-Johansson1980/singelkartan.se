@@ -14,4 +14,9 @@ return [
     'age_min' => (int) env('SINGELKARTAN_AGE_MIN', 18),
 
     'age_max' => (int) env('SINGELKARTAN_AGE_MAX', 80),
+
+    'premium_mode' => (bool) env('SINGELKARTAN_PREMIUM_MODE', false),
+
+    // Bearer token required when premium_mode is true
+    'premium_token' => env('SINGELKARTAN_PREMIUM_TOKEN'),
 ];
