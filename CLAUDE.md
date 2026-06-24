@@ -26,7 +26,7 @@ This application is a Laravel application and its main Laravel ecosystems packag
 
 ## Skills Activation
 
-This project has domain-specific skills available in `**/skills/**`. You MUST activate the relevant skill whenever you work in that domain—don't wait until you're stuck.
+This project has domain-specific skills available in `**/skills/**`. You MUST activate the relevant skill BEFORE starting any work in that domain — not after problems appear. Load all applicable skills at the beginning of the task, not mid-way through.
 
 ## Conventions
 
