@@ -16,6 +16,16 @@ class TargetForm extends Component
 
     public int $ageMax = 34;
 
+    public int $ageAbsMin;
+
+    public int $ageAbsMax;
+
+    public function mount(): void
+    {
+        $this->ageAbsMin = (int) config('singelkartan.age_min');
+        $this->ageAbsMax = (int) config('singelkartan.age_max');
+    }
+
     public function updatedSex(): void
     {
         $this->dispatch('target-changed', sex: $this->sex, ageMin: $this->ageMin, ageMax: $this->ageMax);
@@ -24,7 +34,7 @@ class TargetForm extends Component
     public function updatedAgeMin(): void
     {
         if ($this->ageMin >= $this->ageMax) {
-            $this->ageMin = max(18, $this->ageMax - 1);
+            $this->ageMin = max($this->ageAbsMin, $this->ageMax - 1);
         }
 
         $this->dispatch('target-changed', sex: $this->sex, ageMin: $this->ageMin, ageMax: $this->ageMax);
@@ -33,7 +43,7 @@ class TargetForm extends Component
     public function updatedAgeMax(): void
     {
         if ($this->ageMax <= $this->ageMin) {
-            $this->ageMax = min(80, $this->ageMin + 1);
+            $this->ageMax = min($this->ageAbsMax, $this->ageMin + 1);
         }
 
         $this->dispatch('target-changed', sex: $this->sex, ageMin: $this->ageMin, ageMax: $this->ageMax);

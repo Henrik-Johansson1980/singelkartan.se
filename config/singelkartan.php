@@ -10,4 +10,8 @@ return [
     'shrinkage_k' => (int) env('SINGELKARTAN_SHRINKAGE_K', 50),
 
     'sync_year' => (int) env('SINGELKARTAN_SYNC_YEAR', 2025),
+
+    'age_min' => (int) env('SINGELKARTAN_AGE_MIN', 18),
+
+    'age_max' => (int) env('SINGELKARTAN_AGE_MAX', 80),
 ];

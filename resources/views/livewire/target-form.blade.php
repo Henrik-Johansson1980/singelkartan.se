@@ -27,8 +27,8 @@
         x-data="{
             ageMin: $wire.entangle('ageMin'),
             ageMax: $wire.entangle('ageMax'),
-            min: 18,
-            max: 80,
+            min: {{ $ageAbsMin }},
+            max: {{ $ageAbsMax }},
         }"
         class="mb-2"
     >
@@ -69,8 +69,8 @@
         </div>
 
         <div class="flex justify-between text-xs text-rose-400 dark:text-rose-500 mt-1">
-            <span>18</span>
-            <span>80</span>
+            <span>{{ $ageAbsMin }}</span>
+            <span>{{ $ageAbsMax }}</span>
         </div>
     </div>
 
