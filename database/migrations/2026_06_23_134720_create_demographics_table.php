@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('demographics', function (Blueprint $table) {
+        Schema::create('demographics', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('region_id')->constrained()->cascadeOnDelete();
             $table->unsignedSmallInteger('year');

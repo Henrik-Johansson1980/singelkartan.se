@@ -6,7 +6,6 @@ namespace App\Models;
 
 use App\Enums\RegionLevel;
 use Database\Factories\RegionFactory;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -26,6 +25,7 @@ class Region extends Model
     ];
 
     /** @return array<string, mixed> */
+    #[\Override]
     protected function casts(): array
     {
         return [

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('score_cache', function (Blueprint $table) {
+        Schema::create('score_cache', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('region_id')->constrained()->cascadeOnDelete();
             $table->string('sex');

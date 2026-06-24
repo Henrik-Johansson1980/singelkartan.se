@@ -8,8 +8,8 @@ namespace App\Data\Scb;
 readonly class JsonStatDimension
 {
     /**
-     * @param array<string, string> $categoryLabels Map of code → label
-     * @param list<string>          $categoryIds    Ordered list of codes
+     * @param  array<string, string>  $categoryLabels  Map of code → label
+     * @param  list<string>  $categoryIds  Ordered list of codes
      */
     public function __construct(
         public string $label,

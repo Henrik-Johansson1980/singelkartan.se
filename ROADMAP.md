@@ -1,6 +1,6 @@
 # Singelkartan — Roadmap
 
-## Phase 1 — Foundation ✅ mostly done
+## Phase 1 — Foundation ✅
 > Goal: working toplist on seeded data, all quality gates green
 
 - [x] Tooling: PHPStan → level 8, composer script `stan` added *(rector not installed — skipped)*
@@ -17,7 +17,7 @@
 - [x] Livewire `Leaderboard` — ranked top-10 list with score bars, medal badges
 - [x] Hero landing page (welcome.blade.php) wired to Livewire components
 - [x] `ROADMAP.md` (this file)
-- [ ] Pest tests: `SingleScoreServiceTest` (ratio, shrinkage, min-count, edge cases) + `LeaderboardTest`
+- [x] Pest tests: `SingleScoreServiceTest` (ratio, shrinkage, min-count, edge cases) + `LeaderboardTest`
 
 ## Phase 2 — Interactive Map
 > Goal: choropleth Sverigekarta synced with the toplist

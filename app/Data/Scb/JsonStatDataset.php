@@ -8,10 +8,10 @@ namespace App\Data\Scb;
 readonly class JsonStatDataset
 {
     /**
-     * @param list<string>                     $id         Dimension ids in order
-     * @param list<int>                        $size       Number of categories per dimension
-     * @param array<string, JsonStatDimension> $dimensions Map of id → dimension
-     * @param list<int|float|null>             $values     Flat array of observation values
+     * @param  list<string>  $id  Dimension ids in order
+     * @param  list<int>  $size  Number of categories per dimension
+     * @param  array<string, JsonStatDimension>  $dimensions  Map of id → dimension
+     * @param  list<int|float|null>  $values  Flat array of observation values
      */
     public function __construct(
         public array $id,

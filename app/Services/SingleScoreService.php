@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\DB;
 
 class SingleScoreService
 {
-    private int $minCount;
+    private readonly int $minCount;
 
-    private int $shrinkageK;
+    private readonly int $shrinkageK;
 
     public function __construct()
     {
@@ -40,8 +40,8 @@ class SingleScoreService
         $globalMeanRatio = $this->computeGlobalMean($rows);
 
         $scored = $rows
-            ->filter(fn (object $row): bool => $row->total_count >= $this->minCount)
-            ->map(fn (object $row): array => [
+            ->filter(fn (\stdClass $row): bool => $row->total_count >= $this->minCount)
+            ->map(fn (\stdClass $row): array => [
                 'region_id' => (int) $row->region_id,
                 'sex' => $sex->value,
                 'age_min' => $ageMin,
@@ -116,7 +116,7 @@ class SingleScoreService
     }
 
     /**
-     * @param  Collection<int, object>  $rows
+     * @param  Collection<int, \stdClass>  $rows
      */
     private function computeGlobalMean(Collection $rows): float
     {
@@ -133,7 +133,7 @@ class SingleScoreService
     /**
      * Query aggregated single_count and total_count per region from demographics.
      *
-     * @return Collection<int, object>
+     * @return Collection<int, \stdClass>
      */
     private function queryDemographics(Sex $sex, int $ageMin, int $ageMax): Collection
     {

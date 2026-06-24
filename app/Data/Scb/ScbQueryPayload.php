@@ -8,7 +8,7 @@ namespace App\Data\Scb;
 readonly class ScbQueryPayload
 {
     /**
-     * @param array<int, array{variableCode: string, valueCodes: list<string>}> $selection
+     * @param  array<int, array{variableCode: string, valueCodes: list<string>}>  $selection
      */
     public function __construct(
         public string $responseLanguage = 'sv',

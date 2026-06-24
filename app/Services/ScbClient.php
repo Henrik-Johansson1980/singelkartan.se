@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Data\Scb\JsonStatDataset;
-use App\Data\Scb\JsonStatDimension;
 use App\Data\Scb\ScbObservation;
 use App\Data\Scb\ScbQueryPayload;
 use App\Enums\HouseholdStatus;
@@ -23,15 +22,13 @@ use Illuminate\Support\Facades\Http;
  */
 class ScbClient
 {
-    private const int MAX_VALUES_PER_REQUEST = 100_000;
-
     private const string TABLE_HOUSEHOLD = 'HushallT08CKM';
 
     private const string TABLE_POPULATION = 'BefolkningCKM';
 
     private const int CHUNK_SIZE = 50;
 
-    private string $baseUrl;
+    private readonly string $baseUrl;
 
     public function __construct()
     {
@@ -42,8 +39,8 @@ class ScbClient
      * Fetch single-person household counts from HushallT08CKM.
      *
      * @param  list<string>  $regionCodes  Kommunkoder e.g. ['0114', '0115']
-     * @param  list<string>  $ageCodes     SCB age codes e.g. ['20-24', '25-29']
-     * @param  list<Sex>     $sexes
+     * @param  list<string>  $ageCodes  SCB age codes e.g. ['20-24', '25-29']
+     * @param  list<Sex>  $sexes
      * @return Collection<int, ScbObservation>
      *
      * @throws ConnectionException
@@ -65,7 +62,7 @@ class ScbClient
      *
      * @param  list<string>  $regionCodes
      * @param  list<string>  $ageCodes
-     * @param  list<Sex>     $sexes
+     * @param  list<Sex>  $sexes
      * @return Collection<int, ScbObservation>
      *
      * @throws ConnectionException
@@ -83,10 +80,10 @@ class ScbClient
     }
 
     /**
-     * @param  list<string>          $regionCodes
-     * @param  list<string>          $ageCodes
-     * @param  list<Sex>             $sexes
-     * @param  list<HouseholdStatus> $householdStatuses
+     * @param  list<string>  $regionCodes
+     * @param  list<string>  $ageCodes
+     * @param  list<Sex>  $sexes
+     * @param  list<HouseholdStatus>  $householdStatuses
      * @return Collection<int, ScbObservation>
      *
      * @throws ConnectionException
@@ -119,10 +116,10 @@ class ScbClient
     }
 
     /**
-     * @param  list<string>          $regionCodes
-     * @param  list<string>          $ageCodes
-     * @param  list<Sex>             $sexes
-     * @param  list<HouseholdStatus> $householdStatuses
+     * @param  list<string>  $regionCodes
+     * @param  list<string>  $ageCodes
+     * @param  list<Sex>  $sexes
+     * @param  list<HouseholdStatus>  $householdStatuses
      */
     private function buildPayload(
         array $regionCodes,
@@ -210,7 +207,7 @@ class ScbClient
                                 $observation = $this->buildObservation(
                                     $regionCode, $ageCode, $sexCode, $statusCode, (int) $value
                                 );
-                                if ($observation !== null) {
+                                if ($observation instanceof ScbObservation) {
                                     $observations->push($observation);
                                 }
                             }
@@ -221,7 +218,7 @@ class ScbClient
                             $observation = $this->buildObservation(
                                 $regionCode, $ageCode, $sexCode, null, (int) $value
                             );
-                            if ($observation !== null) {
+                            if ($observation instanceof ScbObservation) {
                                 $observations->push($observation);
                             }
                         }
@@ -241,7 +238,7 @@ class ScbClient
         int $count,
     ): ?ScbObservation {
         $sex = $this->mapSexCode($sexCode);
-        if ($sex === null) {
+        if (! $sex instanceof Sex) {
             return null;
         }
 
@@ -249,7 +246,7 @@ class ScbClient
             ? $this->mapHouseholdStatusCode($statusCode)
             : HouseholdStatus::Other;
 
-        if ($householdStatus === null) {
+        if (! $householdStatus instanceof HouseholdStatus) {
             return null;
         }
 

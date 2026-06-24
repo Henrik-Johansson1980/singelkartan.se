@@ -8,6 +8,7 @@ use App\Enums\Sex;
 use App\Models\ScoreCache;
 use App\Services\SingleScoreService;
 use Illuminate\Support\Collection;
+use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -50,7 +51,7 @@ class Leaderboard extends Component
         return Sex::tryFrom($this->sex)?->label() ?? 'Alla';
     }
 
-    public function render(): \Illuminate\View\View
+    public function render(): View
     {
         return view('livewire.leaderboard', [
             'topRegions' => $this->topRegions(),

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Enums\HouseholdStatus;
 use App\Enums\RegionLevel;
 use App\Enums\Sex;
 use App\Models\Demographic;
@@ -16,7 +15,6 @@ use Illuminate\Console\Command;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 
 #[Signature('singelkartan:sync {--dry-run : Fetch and parse but do not write to database}')]
 #[Description('Sync demographic data from SCB PxWebApi 2 into the demographics table.')]
@@ -72,16 +70,16 @@ class SingelkartanSync extends Command
         $isDryRun = (bool) $this->option('dry-run');
         $year = (int) config('singelkartan.sync_year');
 
-        $this->info("Syncing SCB data for year {$year}" . ($isDryRun ? ' (dry run)' : '') . '...');
+        $this->info("Syncing SCB data for year {$year}".($isDryRun ? ' (dry run)' : '').'...');
 
         try {
             $this->syncHouseholdData($client, $isDryRun);
         } catch (ConnectionException $e) {
-            $this->error('SCB API connection failed: ' . $e->getMessage());
+            $this->error('SCB API connection failed: '.$e->getMessage());
 
             return Command::FAILURE;
         } catch (RequestException $e) {
-            $this->error('SCB API request failed: ' . $e->getMessage());
+            $this->error('SCB API request failed: '.$e->getMessage());
 
             return Command::FAILURE;
         }
@@ -132,7 +130,7 @@ class SingelkartanSync extends Command
             ->values()
             ->all();
 
-        $this->info('Upserting ' . count($rows) . ' demographic rows...');
+        $this->info('Upserting '.count($rows).' demographic rows...');
 
         foreach (array_chunk($rows, 500) as $chunk) {
             Demographic::upsert(

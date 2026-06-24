@@ -144,7 +144,7 @@ class DatabaseSeeder extends Seeder
                     ->select([
                         'region_id',
                         DB::raw("SUM(CASE WHEN household_status = 'single_person' THEN `count` ELSE 0 END) as single_count"),
-                        DB::raw("SUM(`count`) as total_count"),
+                        DB::raw('SUM(`count`) as total_count'),
                     ])
                     ->where('year', $year)
                     ->where('sex', $sex->value)

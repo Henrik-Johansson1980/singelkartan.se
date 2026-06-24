@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire;
 
-use App\Enums\Sex;
+use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -39,6 +39,9 @@ class TargetForm extends Component
         $this->dispatch('target-changed', sex: $this->sex, ageMin: $this->ageMin, ageMax: $this->ageMax);
     }
 
+    /**
+     * @return array<int, array{value: string, label: string, emoji: string}>
+     */
     #[Computed]
     public function sexOptions(): array
     {
@@ -49,7 +52,7 @@ class TargetForm extends Component
         ];
     }
 
-    public function render(): \Illuminate\View\View
+    public function render(): View
     {
         return view('livewire.target-form');
     }
