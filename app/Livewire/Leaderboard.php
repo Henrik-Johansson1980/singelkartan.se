@@ -22,19 +22,34 @@ class Leaderboard extends Component
 
     public bool $isLoading = false;
 
+    public string $mapDataJson = '{}';
+
+    public function mount(): void
+    {
+        $this->mapDataJson = $this->buildMapDataJson(Sex::tryFrom($this->sex) ?? Sex::Female);
+    }
+
     #[On('target-changed')]
     public function onTargetChanged(string $sex, int $ageMin, int $ageMax): void
     {
         $this->sex = $sex;
         $this->ageMin = $ageMin;
         $this->ageMax = $ageMax;
+
+        $sexEnum = Sex::tryFrom($sex) ?? Sex::Female;
+        $service = app(SingleScoreService::class);
+
+        if ($service->getTopRegions($sexEnum, $ageMin, $ageMax, 1)->isEmpty()) {
+            $service->computeTopRegions($sexEnum, $ageMin, $ageMax);
+        }
+
+        $this->mapDataJson = $this->buildMapDataJson($sexEnum);
     }
 
     /** @return Collection<int, ScoreCache> */
     public function topRegions(): Collection
     {
         $sex = Sex::tryFrom($this->sex) ?? Sex::Female;
-
         $service = app(SingleScoreService::class);
 
         $cached = $service->getTopRegions($sex, $this->ageMin, $this->ageMax, 10);
@@ -56,5 +71,32 @@ class Leaderboard extends Component
         return view('livewire.leaderboard', [
             'topRegions' => $this->topRegions(),
         ]);
+    }
+
+    private function buildMapDataJson(Sex $sex): string
+    {
+        $entries = ScoreCache::with('region')
+            ->whereHas('region')
+            ->where('sex', $sex->value)
+            ->where('age_min', $this->ageMin)
+            ->where('age_max', $this->ageMax)
+            ->get();
+
+        $data = [];
+        foreach ($entries as $entry) {
+            $region = $entry->region;
+            if ($region === null) {
+                continue;
+            }
+            $data[$region->code] = [
+                'name' => $region->name,
+                'score' => $entry->score,
+                'pct' => $entry->singlePercentage(),
+                'singles' => $entry->single_count,
+                'total' => $entry->total_count,
+            ];
+        }
+
+        return (string) json_encode($data);
     }
 }

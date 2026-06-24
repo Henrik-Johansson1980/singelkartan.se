@@ -35,7 +35,7 @@
         </header>
 
         {{-- Main content --}}
-        <main class="max-w-3xl mx-auto px-4 pb-20 space-y-6">
+        <main class="max-w-5xl mx-auto px-4 pb-20 space-y-6">
 
             {{-- Target form --}}
             <livewire:target-form />
