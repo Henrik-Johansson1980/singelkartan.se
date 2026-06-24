@@ -83,8 +83,8 @@
                                 <div class="shrink-0 w-24 hidden sm:block">
                                     <div class="h-2 rounded-full bg-surface-100 dark:bg-surface-700 overflow-hidden">
                                         <div
-                                            class="h-full rounded-full bg-gradient-to-r from-brand-400 to-brand-500 transition-all duration-500"
-                                            style="width: {{ min(100, $entry->score) }}%"
+                                            class="h-full rounded-full bg-gradient-to-r from-brand-400 to-brand-500 transition-all duration-500 w-[var(--score)]"
+                                            style="--score: {{ min(100, $entry->score) }}%"
                                         ></div>
                                     </div>
                                 </div>

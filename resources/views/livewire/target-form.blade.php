@@ -90,8 +90,8 @@
 
                 {{-- Active range highlight --}}
                 <div
-                    class="absolute top-1/2 -translate-y-1/2 h-2 rounded-full bg-gradient-to-r from-brand-400 to-brand-500"
-                    :style="`left: ${((ageMin - min) / (max - min)) * 100}%; right: ${100 - ((ageMax - min) / (max - min)) * 100}%`"
+                    class="absolute top-1/2 -translate-y-1/2 h-2 rounded-full bg-gradient-to-r from-brand-400 to-brand-500 left-[var(--left)] right-[var(--right)]"
+                    :style="`--left: ${((ageMin - min) / (max - min)) * 100}%; --right: ${100 - ((ageMax - min) / (max - min)) * 100}%`"
                 ></div>
 
                 {{-- Min thumb --}}
