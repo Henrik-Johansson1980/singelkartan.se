@@ -51,7 +51,7 @@ it('updates on target-changed event', function (): void {
     ]);
 
     Livewire::test(ResultCard::class)
-        ->dispatch('target-changed', sex: 'male', ageMin: 35, ageMax: 44)
+        ->dispatch('target-changed', level: 'kommun', sex: 'male', ageMin: 35, ageMax: 44)
         ->assertSet('sex', 'male')
         ->assertSet('ageMin', 35)
         ->assertSet('ageMax', 44)

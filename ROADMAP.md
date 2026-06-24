@@ -46,13 +46,18 @@
 - [x] DejaVu Sans fonts bundled in `resources/fonts/` for portable OG image rendering
 - [x] Commit
 
-## Phase 4 — DeSO Granularity
+## Phase 4 — DeSO Granularity ✅
 > Goal: finer-grained map using DeSO areas
 
-- [ ] Fetch `HushallDesoTyp` from SCB API (grov singel-andel per DeSO, no sex/age breakdowns)
-- [ ] GeoJSON for DeSO boundaries
-- [ ] Level toggle: Kommun ↔ DeSO in the UI
-- [ ] Commit
+- [x] Verified SCB API: table `TAB6568`, codelist `vs_DeSO2025`, household codes `ESMB`+`ESUB`=single, `TOTALT`=total
+- [x] DeSO 2025 GeoJSON from SCB WFS (`geodata.scb.se`): reprojected SWEREF99→WGS84, simplified to 3%, 4.8 MB — `public/geojson/deso.geojson`
+- [x] `DesoObservation` DTO (desoCode, kommunCode, singleCount, totalCount)
+- [x] `ScbClient::fetchDesoData()` — chunks of 1 000, single request covers all 6 160 areas
+- [x] `singelkartan:sync --deso` — upserts DeSO Region rows (name = municipality, code = desokod), computes Bayesian scores into `score_cache` with `sex=all, age_min=0, age_max=0`
+- [x] `TargetForm` level toggle (Kommuner ↔ DeSO-områden) with `#[Url]`; sex/age controls hidden in DeSO mode
+- [x] `Leaderboard` + `ResultCard` handle DeSO mode (different queries, toplist shows area code as subtitle)
+- [x] `choropleth.js` lazy-loads `deso.geojson` on toggle; watches `$wire.level`, redraws with correct code property
+- [x] Commit
 
 ## Phase 5 — Premium / White-label Stub
 > Goal: lay groundwork for future monetisation

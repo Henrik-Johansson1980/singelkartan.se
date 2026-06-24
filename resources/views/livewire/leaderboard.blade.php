@@ -12,10 +12,18 @@
             <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80">
                 <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                     <x-heroicon-o-heart class="h-5 w-5 text-rose-500" />
-                    Topp {{ $topRegions->count() }} singeltätaste kommuner
+                    @if ($this->isDesoMode())
+                        Topp {{ $topRegions->count() }} singeltätaste DeSO-områden
+                    @else
+                        Topp {{ $topRegions->count() }} singeltätaste kommuner
+                    @endif
                 </h2>
                 <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                    {{ $this->sexLabel() }}, {{ $ageMin }}–{{ $ageMax }} år &nbsp;·&nbsp; Källa: SCB
+                    @if ($this->isDesoMode())
+                        Alla &nbsp;·&nbsp; Källa: SCB TAB6568
+                    @else
+                        {{ $this->sexLabel() }}, {{ $ageMin }}–{{ $ageMax }} år &nbsp;·&nbsp; Källa: SCB
+                    @endif
                 </p>
             </div>
 
@@ -27,6 +35,7 @@
                     wire:ignore
                     x-data="choroplethMap"
                     data-map-data="{{ $mapDataJson }}"
+                    data-map-level="{{ $level }}"
                     class="md:w-80 lg:w-96 flex-shrink-0 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-700"
                 >
                     <div
@@ -63,6 +72,9 @@
                                         {{ $entry->region->name ?? 'Okänd' }}
                                     </p>
                                     <p class="text-xs text-slate-400 dark:text-slate-500">
+                                        @if ($this->isDesoMode())
+                                            {{ $entry->region->code ?? '' }} &nbsp;·&nbsp;
+                                        @endif
                                         {{ number_format($entry->single_count) }} singlar av {{ number_format($entry->total_count) }} totalt
                                     </p>
                                 </div>

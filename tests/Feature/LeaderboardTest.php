@@ -55,7 +55,7 @@ it('updates displayed regions when target-changed event is dispatched', function
     Livewire::test(Leaderboard::class)
         ->assertSee('Tjejstad')
         ->assertDontSee('Killetown')
-        ->dispatch('target-changed', sex: 'male', ageMin: 35, ageMax: 44)
+        ->dispatch('target-changed', level: 'kommun', sex: 'male', ageMin: 35, ageMax: 44)
         ->assertDontSee('Tjejstad')
         ->assertSee('Killetown');
 });
@@ -65,7 +65,7 @@ it('reflects updated sex and age props after target-changed', function (): void 
         ->assertSet('sex', 'female')
         ->assertSet('ageMin', 25)
         ->assertSet('ageMax', 34)
-        ->dispatch('target-changed', sex: 'male', ageMin: 30, ageMax: 39)
+        ->dispatch('target-changed', level: 'kommun', sex: 'male', ageMin: 30, ageMax: 39)
         ->assertSet('sex', 'male')
         ->assertSet('ageMin', 30)
         ->assertSet('ageMax', 39);

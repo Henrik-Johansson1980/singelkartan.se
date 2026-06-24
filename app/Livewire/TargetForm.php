@@ -11,6 +11,9 @@ use Livewire\Component;
 
 class TargetForm extends Component
 {
+    #[Url(history: true, except: 'kommun')]
+    public string $level = 'kommun';
+
     #[Url(history: true, except: 'female')]
     public string $sex = 'female';
 
@@ -30,9 +33,15 @@ class TargetForm extends Component
         $this->ageAbsMax = (int) config('singelkartan.age_max');
     }
 
+    public function setLevel(string $level): void
+    {
+        $this->level = $level;
+        $this->dispatchTargetChanged();
+    }
+
     public function updatedSex(): void
     {
-        $this->dispatch('target-changed', sex: $this->sex, ageMin: $this->ageMin, ageMax: $this->ageMax);
+        $this->dispatchTargetChanged();
     }
 
     public function updatedAgeMin(): void
@@ -41,7 +50,7 @@ class TargetForm extends Component
             $this->ageMin = max($this->ageAbsMin, $this->ageMax - 1);
         }
 
-        $this->dispatch('target-changed', sex: $this->sex, ageMin: $this->ageMin, ageMax: $this->ageMax);
+        $this->dispatchTargetChanged();
     }
 
     public function updatedAgeMax(): void
@@ -50,7 +59,7 @@ class TargetForm extends Component
             $this->ageMax = min($this->ageAbsMax, $this->ageMin + 1);
         }
 
-        $this->dispatch('target-changed', sex: $this->sex, ageMin: $this->ageMin, ageMax: $this->ageMax);
+        $this->dispatchTargetChanged();
     }
 
     /**
@@ -69,5 +78,16 @@ class TargetForm extends Component
     public function render(): View
     {
         return view('livewire.target-form');
+    }
+
+    private function dispatchTargetChanged(): void
+    {
+        $this->dispatch(
+            'target-changed',
+            level: $this->level,
+            sex: $this->sex,
+            ageMin: $this->ageMin,
+            ageMax: $this->ageMax,
+        );
     }
 }

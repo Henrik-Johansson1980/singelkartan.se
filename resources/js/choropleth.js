@@ -12,6 +12,17 @@ const PALETTE = [
 
 const COLOR_NO_DATA = '#e5e7eb'
 
+const GEOJSON_URLS = {
+    kommun: '/geojson/kommuner.geojson',
+    deso: '/geojson/deso.geojson',
+}
+
+// Property name used as the region key in each GeoJSON layer
+const CODE_PROP = {
+    kommun: 'id',
+    deso: 'deso',
+}
+
 /**
  * Compute quantile break points from a scores map.
  * @param {Record<string, {score: number}>} scores
@@ -44,17 +55,18 @@ export default function choroplethMap() {
     return {
         map: null,
         layer: null,
-        geojson: null,
+        geojsonCache: {},
         scores: {},
         breaks: [],
         tooltip: null,
+        currentLevel: 'kommun',
 
         async init() {
             this.scores = JSON.parse(this.$el.dataset.mapData || '{}')
+            this.currentLevel = this.$el.dataset.mapLevel || 'kommun'
             this.breaks = computeBreaks(this.scores, PALETTE.length)
 
-            const res = await fetch('/geojson/kommuner.geojson')
-            this.geojson = await res.json()
+            await this.loadGeojson(this.currentLevel)
 
             this.map = L.map(this.$refs.mapEl, {
                 scrollWheelZoom: false,
@@ -62,22 +74,32 @@ export default function choroplethMap() {
                 attributionControl: true,
             })
 
-            this.drawLayer()
+            this.drawLayer(this.currentLevel)
             this.map.fitBounds(this.layer.getBounds(), { padding: [4, 4] })
 
-            // Livewire updates mapDataJson → redraw choropleth
+            // Livewire updates mapDataJson → redraw choropleth colours
             this.$watch('$wire.mapDataJson', value => {
                 this.scores = JSON.parse(value)
                 this.breaks = computeBreaks(this.scores, PALETTE.length)
-                this.layer?.setStyle(f => this.styleFor(f))
+                this.layer?.setStyle(f => this.styleFor(f, this.currentLevel))
+            })
+
+            // Livewire updates level → reload GeoJSON and redraw
+            this.$watch('$wire.level', async newLevel => {
+                if (newLevel === this.currentLevel) return
+                this.currentLevel = newLevel
+                await this.loadGeojson(newLevel)
+                this.layer?.remove()
+                this.drawLayer(newLevel)
+                this.map.fitBounds(this.layer.getBounds(), { padding: [4, 4] })
             })
 
             // Toplist row hover → highlight region on map
             window.addEventListener('singelkartan:list-hover', e => {
                 const code = e.detail?.code ?? null
+                const prop = CODE_PROP[this.currentLevel]
                 this.layer?.eachLayer(l => {
-                    const lCode = l.feature?.properties?.id
-                    if (lCode === code) {
+                    if (l.feature?.properties?.[prop] === code) {
                         l.setStyle({ weight: 2, color: '#9f1239', fillOpacity: 0.95 })
                         l.bringToFront()
                     } else {
@@ -87,32 +109,43 @@ export default function choroplethMap() {
             })
         },
 
-        styleFor(feature) {
-            const entry = this.scores[feature.properties.id]
+        async loadGeojson(level) {
+            if (this.geojsonCache[level]) return
+            const res = await fetch(GEOJSON_URLS[level])
+            this.geojsonCache[level] = await res.json()
+        },
+
+        styleFor(feature, level) {
+            const prop = CODE_PROP[level]
+            const entry = this.scores[feature.properties[prop]]
             return {
                 fillColor: entry ? scoreColor(entry.score, this.breaks) : COLOR_NO_DATA,
                 fillOpacity: 0.75,
                 color: '#ffffff',
-                weight: 0.5,
+                weight: level === 'deso' ? 0.3 : 0.5,
             }
         },
 
-        drawLayer() {
-            this.layer = L.geoJSON(this.geojson, {
-                style: f => this.styleFor(f),
+        drawLayer(level) {
+            const geojson = this.geojsonCache[level]
+            this.layer = L.geoJSON(geojson, {
+                style: f => this.styleFor(f, level),
                 onEachFeature: (feature, l) => {
                     l.on({
-                        mouseover: e => this.onHover(e, feature),
+                        mouseover: e => this.onHover(e, feature, level),
                         mouseout:  e => this.onHoverOut(e),
                     })
                 },
             }).addTo(this.map)
         },
 
-        onHover(e, feature) {
-            const code    = feature.properties.id
-            const name    = feature.properties.kom_namn
-            const entry   = this.scores[code]
+        onHover(e, feature, level) {
+            const prop = CODE_PROP[level]
+            const code  = feature.properties[prop]
+            const name  = level === 'deso'
+                ? (feature.properties.deso ?? code)
+                : (feature.properties.kom_namn ?? code)
+            const entry = this.scores[code]
 
             e.target.setStyle({ weight: 2, color: '#9f1239', fillOpacity: 0.95 })
             e.target.bringToFront()
