@@ -3,8 +3,28 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        @php
+            $ogSex = request()->query('sex', 'female');
+            $ogAgeMin = (int) request()->query('ageMin', 25);
+            $ogAgeMax = (int) request()->query('ageMax', 34);
+            $ogSexLabel = \App\Enums\Sex::tryFrom($ogSex)?->label() ?? 'Alla';
+            $ogDescription = "Singeltätaste kommunerna för {$ogSexLabel}, {$ogAgeMin}–{$ogAgeMax} år — baserat på SCB:s statistik.";
+            $ogImageUrl = route('og-image', ['sex' => $ogSex, 'ageMin' => $ogAgeMin, 'ageMax' => $ogAgeMax]);
+            $ogPageUrl = url()->full();
+        @endphp
         <title>Singelkartan – Var bor singlarna i Sverige?</title>
-        <meta name="description" content="Hitta de singeltätaste områdena i Sverige. Välj målgrupp och se topplistan direkt.">
+        <meta name="description" content="{{ $ogDescription }}">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ $ogPageUrl }}">
+        <meta property="og:title" content="Singelkartan – Var bor singlarna i Sverige?">
+        <meta property="og:description" content="{{ $ogDescription }}">
+        <meta property="og:image" content="{{ $ogImageUrl }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Singelkartan – Var bor singlarna i Sverige?">
+        <meta name="twitter:description" content="{{ $ogDescription }}">
+        <meta name="twitter:image" content="{{ $ogImageUrl }}">
 
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -85,6 +105,9 @@
 
             {{-- Leaderboard --}}
             <livewire:leaderboard />
+
+            {{-- Share card --}}
+            <livewire:result-card />
 
         </main>
 

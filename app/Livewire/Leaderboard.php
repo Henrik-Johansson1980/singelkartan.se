@@ -26,6 +26,10 @@ class Leaderboard extends Component
 
     public function mount(): void
     {
+        $this->sex = request()->query('sex', $this->sex);
+        $this->ageMin = (int) request()->query('ageMin', $this->ageMin);
+        $this->ageMax = (int) request()->query('ageMax', $this->ageMax);
+
         $this->mapDataJson = $this->buildMapDataJson(Sex::tryFrom($this->sex) ?? Sex::Female);
     }
 

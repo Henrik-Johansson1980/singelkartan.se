@@ -6,14 +6,18 @@ namespace App\Livewire;
 
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 class TargetForm extends Component
 {
+    #[Url(history: true, except: 'female')]
     public string $sex = 'female';
 
+    #[Url(history: true, except: 25)]
     public int $ageMin = 25;
 
+    #[Url(history: true, except: 34)]
     public int $ageMax = 34;
 
     public int $ageAbsMin;

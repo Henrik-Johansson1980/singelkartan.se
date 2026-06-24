@@ -34,14 +34,17 @@
 - [x] Replace all emoji icons with heroicons (`blade-heroicons`) and Unicode gender symbols (♀ ♂)
 - [x] Commit
 
-## Phase 3 — Sharable Result Card
+## Phase 3 — Sharable Result Card ✅
 > Goal: viral sharing with auto-generated OG images
 
-- [ ] Livewire `ResultCard` component
-- [ ] OG-image generation (Browsershot or Blade → image route)
-- [ ] Social share buttons (Facebook, X/Twitter, copy link)
-- [ ] Auto-generated page title + meta tags per search
-- [ ] Commit
+- [x] `#[Url]` on `TargetForm` properties — shareable URLs with browser history
+- [x] `Leaderboard` + `ResultCard` read URL query params on mount
+- [x] Livewire `ResultCard` component — top result summary + share buttons
+- [x] Social share buttons (Facebook, X/Twitter, copy link via clipboard API)
+- [x] OG-image route (`/og-image`) — PHP GD 1200×630 PNG, no extra dependencies
+- [x] Dynamic `og:*` + `twitter:*` meta tags in `welcome.blade.php`
+- [x] DejaVu Sans fonts bundled in `resources/fonts/` for portable OG image rendering
+- [x] Commit
 
 ## Phase 4 — DeSO Granularity
 > Goal: finer-grained map using DeSO areas
