@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="sv" class="h-full">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -54,14 +54,14 @@
 
         @livewireStyles
     </head>
-    <body class="min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+    <body class="h-full flex flex-col overflow-hidden bg-white dark:bg-surface-900 text-surface-900 dark:text-surface-100">
 
         {{-- Theme toggle --}}
         <div class="fixed top-4 right-4 z-50">
             <button
                 id="theme-toggle"
                 title="Byt tema"
-                class="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 shadow-sm transition-colors"
+                class="p-2 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-600 dark:text-surface-300 hover:text-surface-700 dark:hover:text-surface-200 shadow-sm transition-colors"
             >
                 <span id="icon-system">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -81,41 +81,30 @@
             </button>
         </div>
 
-        {{-- Hero --}}
-        <header class="text-center px-4 pt-16 pb-10 md:pt-24 md:pb-14">
-            <div class="inline-block mb-4 animate-bounce" style="animation-duration:2s">
-                <x-heroicon-o-heart class="h-12 w-12 text-rose-500" />
+        {{-- Header --}}
+        <header class="shrink-0 flex items-center gap-3 px-4 py-3 border-b border-surface-200 dark:border-surface-700">
+            <x-heroicon-o-heart class="h-6 w-6 text-brand-500 shrink-0" />
+            <div class="min-w-0">
+                <h1 class="text-lg font-bold leading-none text-surface-900 dark:text-white">Singelkartan</h1>
+                <p class="text-xs text-brand-600 dark:text-brand-400">Var bor singlarna i Sverige?</p>
             </div>
-            <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-slate-900 dark:text-white mb-4">
-                Singelkartan
-            </h1>
-            <p class="text-xl md:text-2xl text-rose-600 dark:text-rose-400 font-medium mb-2">
-                Var bor singlarna i Sverige?
-            </p>
-            <p class="text-base text-slate-500 dark:text-slate-400 max-w-lg mx-auto">
-                Välj din målgrupp och hitta de singeltätaste kommunerna — helt baserat på SCB:s statistik.
-            </p>
         </header>
 
         {{-- Main content --}}
-        <main class="max-w-5xl mx-auto px-4 pb-20 space-y-6">
+        <main class="flex-1 min-h-0 flex flex-col lg:flex-row gap-4 px-4 py-4 max-w-7xl mx-auto w-full">
 
-            {{-- Target form --}}
-            <livewire:target-form />
+            {{-- Left: filters + share card --}}
+            <div class="lg:w-72 xl:w-80 shrink-0 flex flex-col gap-4">
+                <livewire:target-form />
+                <livewire:result-card />
+            </div>
 
-            {{-- Leaderboard --}}
-            <livewire:leaderboard />
-
-            {{-- Share card --}}
-            <livewire:result-card />
+            {{-- Right: leaderboard --}}
+            <div class="flex-1 min-h-0 min-w-0 overflow-hidden">
+                <livewire:leaderboard />
+            </div>
 
         </main>
-
-        {{-- Footer --}}
-        <footer class="text-center py-8 text-sm text-slate-400 dark:text-slate-500 space-y-1">
-            <p>Data: <a href="https://www.scb.se" target="_blank" rel="noopener" class="underline hover:text-slate-600 dark:hover:text-slate-300">SCB</a> · HushallT08CKM · CC0 1.0</p>
-            <p>"Singel" = ensamboende person enligt SCB:s hushållsstatistik.</p>
-        </footer>
 
         @livewireScripts
 

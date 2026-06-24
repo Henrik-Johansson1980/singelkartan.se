@@ -37,10 +37,10 @@
 
         {{ $head ?? '' }}
     </head>
-    <body class="min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+    <body class="min-h-screen bg-white dark:bg-surface-900 text-surface-900 dark:text-surface-100">
 
         {{-- Custom logo slot — white-label integrators replace the default --}}
-        <header class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+        <header class="px-6 py-4 border-b border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-900">
             {{ $logo ?? '' }}
         </header>
 
@@ -51,8 +51,8 @@
         </main>
 
         {{-- No Singelkartan footer branding --}}
-        <footer class="text-center py-6 text-xs text-slate-400 dark:text-slate-500">
-            <p>Data: <a href="https://www.scb.se" target="_blank" rel="noopener" class="underline hover:text-slate-600 dark:hover:text-slate-300">SCB</a> · CC0 1.0</p>
+        <footer class="text-center py-6 text-xs text-surface-600 dark:text-surface-400">
+            <p>Data: <a href="https://www.scb.se" target="_blank" rel="noopener" class="underline hover:text-surface-600 dark:hover:text-surface-300">SCB</a> · CC0 1.0</p>
         </footer>
 
         @livewireScripts

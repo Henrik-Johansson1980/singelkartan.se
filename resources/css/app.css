@@ -5,6 +5,24 @@
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* ── Brand accent ── swap these four lines to retheme (e.g. rose → violet) */
+    --color-brand-300: var(--color-rose-300);
+    --color-brand-400: var(--color-rose-400);
+    --color-brand-500: var(--color-rose-500);
+    --color-brand-600: var(--color-rose-600);
+
+    /* ── Surface / neutral ── swap slate → zinc / gray / stone here */
+    --color-surface-50:  var(--color-slate-50);
+    --color-surface-100: var(--color-slate-100);
+    --color-surface-200: var(--color-slate-200);
+    --color-surface-300: var(--color-slate-300);
+    --color-surface-400: var(--color-slate-400);
+    --color-surface-500: var(--color-slate-500);
+    --color-surface-600: var(--color-slate-600);
+    --color-surface-700: var(--color-slate-700);
+    --color-surface-800: var(--color-slate-800);
+    --color-surface-900: var(--color-slate-900);
 }
 
 @variant dark (&:where(.dark, .dark *));

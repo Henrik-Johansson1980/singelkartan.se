@@ -71,3 +71,14 @@
 ---
 
 > **Detailed implementation plan (Phase 1):** `/home/henrik/.claude/plans/we-have-a-laravel-jazzy-feather.md`
+
+## Phase 6 — Layout & Theme Refactor ✅
+> Goal: full-viewport no-scroll layout + themeable color system
+
+- [x] Full-viewport layout: `html`/`body` → `h-full flex flex-col overflow-hidden`; compact header bar replaces tall hero
+- [x] Sidebar layout: filters (`TargetForm` + `ResultCard`) in fixed left panel (`lg:w-72`); leaderboard fills remaining width
+- [x] Map enlarged: `md:w-3/5` of leaderboard panel, fills full height via `md:h-full`; list scrolls internally with `overflow-y-auto`
+- [x] Tailwind v4 `@theme` semantic aliases: `--color-brand-*` (rose) and `--color-surface-*` (slate) — swap theme in 4+10 lines
+- [x] All views migrated from raw `rose-*`/`slate-*` to `brand-*`/`surface-*`; `<style>` blocks use `var(--color-*)` CSS variables
+- [x] Contrast pass: light-mode muted text lifted from `surface-400` → `surface-600`; dark-mode from `surface-500` → `surface-400`/`300`
+- [x] Commit
