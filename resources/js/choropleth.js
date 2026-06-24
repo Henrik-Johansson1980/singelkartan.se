@@ -21,7 +21,7 @@ const GEOJSON_URLS = {
 // Property name used as the region key in each GeoJSON layer
 const CODE_PROP = {
     kommun: 'id',
-    deso: 'deso',
+    deso: 'desokod',
 }
 
 /**
@@ -60,6 +60,8 @@ export default function choroplethMap() {
         scores: {},
         breaks: [],
         tooltip: null,
+        popup: null,
+        selectedCode: null,
         currentLevel: 'kommun',
 
         async init() {
@@ -88,6 +90,9 @@ export default function choroplethMap() {
             // Livewire updates level → reload GeoJSON and redraw
             this.$watch('$wire.level', async newLevel => {
                 if (newLevel === this.currentLevel) return
+                this.selectedCode = null
+                this.popup?.remove()
+                this.popup = null
                 this.currentLevel = newLevel
                 await this.loadGeojson(newLevel)
                 this.layer?.remove()
@@ -95,19 +100,86 @@ export default function choroplethMap() {
                 this.map.fitBounds(this.layer.getBounds(), { padding: [4, 4] })
             })
 
-            // Toplist row hover → highlight region on map
+            // Toplist row hover → highlight region on map (skip selected region reset)
             window.addEventListener('singelkartan:list-hover', e => {
                 const code = e.detail?.code ?? null
                 const prop = CODE_PROP[this.currentLevel]
                 this.layer?.eachLayer(l => {
-                    if (l.feature?.properties?.[prop] === code) {
+                    const lCode = l.feature?.properties?.[prop]
+                    if (lCode === code) {
                         l.setStyle({ weight: 2, color: '#9f1239', fillOpacity: 0.95 })
                         l.bringToFront()
-                    } else {
+                    } else if (lCode !== this.selectedCode) {
                         this.layer.resetStyle(l)
                     }
                 })
             })
+
+            // Toplist row click → persistent highlight + popup + fly to bounds
+            window.addEventListener('singelkartan:list-click', e => {
+                const code = e.detail?.code ?? null
+                if (code === this.selectedCode) {
+                    this.clearSelection()
+                    return
+                }
+                this.selectRegion(code)
+            })
+
+            // Popup closed by user (×) → clear selection
+            this.map.on('popupclose', () => {
+                if (this.selectedCode) this.clearSelection()
+            })
+        },
+
+        selectRegion(code) {
+            const prop = CODE_PROP[this.currentLevel]
+            let targetLayer = null
+
+            this.layer?.eachLayer(l => {
+                if (l.feature?.properties?.[prop] === code) {
+                    targetLayer = l
+                    l.setStyle({ weight: 2.5, color: '#9f1239', fillOpacity: 0.95 })
+                    l.bringToFront()
+                } else {
+                    this.layer.resetStyle(l)
+                }
+            })
+
+            if (!targetLayer) return
+
+            this.selectedCode = code
+            const entry = this.scores[code]
+            const feature = targetLayer.feature
+            const name = this.currentLevel === 'deso'
+                ? (feature.properties.desokod ?? code)
+                : (feature.properties.kom_naam ?? feature.properties.kom_namn ?? code)
+
+            const body = entry
+                ? `${entry.pct}% singlar &nbsp;·&nbsp; ${entry.singles.toLocaleString('sv')} / ${entry.total.toLocaleString('sv')}`
+                : 'Otillräckliga data'
+
+            this.popup?.remove()
+            this.popup = L.popup({ closeButton: true, className: 'singel-tip' })
+                .setLatLng(targetLayer.getBounds().getCenter())
+                .setContent(`<strong>${name}</strong><br><span>${body}</span>`)
+                .openOn(this.map)
+
+            this.map.flyToBounds(targetLayer.getBounds(), { maxZoom: 10, padding: [20, 20], duration: 0.6 })
+
+            window.dispatchEvent(new CustomEvent('singelkartan:map-select', { detail: { code } }))
+        },
+
+        clearSelection() {
+            const prop = CODE_PROP[this.currentLevel]
+            this.layer?.eachLayer(l => {
+                if (l.feature?.properties?.[prop] === this.selectedCode) {
+                    this.layer.resetStyle(l)
+                }
+            })
+            this.selectedCode = null
+            this.popup?.remove()
+            this.popup = null
+            window.dispatchEvent(new CustomEvent('singelkartan:map-select', { detail: { code: null } }))
         },
 
         async loadGeojson(level) {
@@ -148,7 +220,7 @@ export default function choroplethMap() {
             const prop = CODE_PROP[level]
             const code  = feature.properties[prop]
             const name  = level === 'deso'
-                ? (feature.properties.deso ?? code)
+                ? (feature.properties.desokod ?? code)
                 : (feature.properties.kom_namn ?? code)
             const entry = this.scores[code]
 
@@ -171,7 +243,11 @@ export default function choroplethMap() {
         },
 
         onHoverOut(e) {
-            this.layer.resetStyle(e.target)
+            const prop = CODE_PROP[this.currentLevel]
+            const code = e.target.feature?.properties?.[prop]
+            if (code !== this.selectedCode) {
+                this.layer.resetStyle(e.target)
+            }
             this.tooltip?.remove()
             this.tooltip = null
             window.dispatchEvent(new CustomEvent('singelkartan:map-hover', { detail: { code: null } }))

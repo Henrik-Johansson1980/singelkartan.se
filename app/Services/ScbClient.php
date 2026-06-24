@@ -23,15 +23,19 @@ use Illuminate\Support\Facades\Http;
  */
 class ScbClient
 {
-    private const string TABLE_HOUSEHOLD = 'HushallT08CKM';
-
-    private const string TABLE_POPULATION = 'BefolkningCKM';
+    private const string TABLE_HOUSEHOLD = 'TAB6689';
 
     private const string TABLE_DESO = 'TAB6568';
 
     private const string DESO_CODELIST = 'vs_DeSO2025';
 
     private const string DESO_CONTENTS_CODE = '000007Y1';
+
+    private const string HOUSEHOLD_CONTENTS_CODE = '000008AI';
+
+    private const string HOUSEHOLD_SINGLE_CODE = 'Aensm';
+
+    private const string HOUSEHOLD_TOTAL_CODE = 'Apers';
 
     private const int CHUNK_SIZE = 50;
 
@@ -45,7 +49,10 @@ class ScbClient
     }
 
     /**
-     * Fetch single-person household counts from HushallT08CKM.
+     * Fetch single-person household counts from TAB6689.
+     *
+     * Requests Aensm (ensamboende/single) and Apers (total) per region/age/sex.
+     * Emits two ScbObservations per combination: SinglePerson + Other (complement).
      *
      * @param  list<string>  $regionCodes  Kommunkoder e.g. ['0114', '0115']
      * @param  list<string>  $ageCodes  SCB age codes e.g. ['20-24', '25-29']
@@ -58,11 +65,9 @@ class ScbClient
     public function fetchHouseholdData(array $regionCodes, array $ageCodes, array $sexes): Collection
     {
         return $this->fetchInChunks(
-            tableId: self::TABLE_HOUSEHOLD,
             regionCodes: $regionCodes,
             ageCodes: $ageCodes,
             sexes: $sexes,
-            householdStatuses: HouseholdStatus::cases(),
         );
     }
 
@@ -114,43 +119,18 @@ class ScbClient
     }
 
     /**
-     * Fetch population counts from BefolkningCKM.
-     *
      * @param  list<string>  $regionCodes
      * @param  list<string>  $ageCodes
      * @param  list<Sex>  $sexes
-     * @return Collection<int, ScbObservation>
-     *
-     * @throws ConnectionException
-     * @throws RequestException
-     */
-    public function fetchPopulationData(array $regionCodes, array $ageCodes, array $sexes): Collection
-    {
-        return $this->fetchInChunks(
-            tableId: self::TABLE_POPULATION,
-            regionCodes: $regionCodes,
-            ageCodes: $ageCodes,
-            sexes: $sexes,
-            householdStatuses: [],
-        );
-    }
-
-    /**
-     * @param  list<string>  $regionCodes
-     * @param  list<string>  $ageCodes
-     * @param  list<Sex>  $sexes
-     * @param  list<HouseholdStatus>  $householdStatuses
      * @return Collection<int, ScbObservation>
      *
      * @throws ConnectionException
      * @throws RequestException
      */
     private function fetchInChunks(
-        string $tableId,
         array $regionCodes,
         array $ageCodes,
         array $sexes,
-        array $householdStatuses,
     ): Collection {
         $results = collect();
 
@@ -159,10 +139,9 @@ class ScbClient
                 regionCodes: $chunk,
                 ageCodes: $ageCodes,
                 sexes: $sexes,
-                householdStatuses: $householdStatuses,
             );
 
-            $dataset = $this->post($tableId, $payload);
+            $dataset = $this->post(self::TABLE_HOUSEHOLD, $payload);
             $observations = $this->parseJsonStat($dataset);
 
             $results = $results->merge($observations);
@@ -232,18 +211,22 @@ class ScbClient
      * @param  list<string>  $regionCodes
      * @param  list<string>  $ageCodes
      * @param  list<Sex>  $sexes
-     * @param  list<HouseholdStatus>  $householdStatuses
      */
     private function buildPayload(
         array $regionCodes,
         array $ageCodes,
         array $sexes,
-        array $householdStatuses,
     ): ScbQueryPayload {
-        $selection = [
+        $year = (int) config('singelkartan.sync_year');
+
+        return new ScbQueryPayload(selection: [
             [
                 'variableCode' => 'Region',
                 'valueCodes' => $regionCodes,
+            ],
+            [
+                'variableCode' => 'Hushallsstallning',
+                'valueCodes' => [self::HOUSEHOLD_SINGLE_CODE, self::HOUSEHOLD_TOTAL_CODE],
             ],
             [
                 'variableCode' => 'Alder',
@@ -253,19 +236,15 @@ class ScbClient
                 'variableCode' => 'Kon',
                 'valueCodes' => array_map(fn (Sex $sex): string => $sex->scbCode(), $sexes),
             ],
-        ];
-
-        if ($householdStatuses !== []) {
-            $selection[] = [
-                'variableCode' => 'HushallsstallningT8',
-                'valueCodes' => array_map(
-                    fn (HouseholdStatus $s): string => $s->scbCode(),
-                    $householdStatuses
-                ),
-            ];
-        }
-
-        return new ScbQueryPayload(selection: $selection);
+            [
+                'variableCode' => 'ContentsCode',
+                'valueCodes' => [self::HOUSEHOLD_CONTENTS_CODE],
+            ],
+            [
+                'variableCode' => 'Tid',
+                'valueCodes' => [(string) $year],
+            ],
+        ]);
     }
 
     /**
@@ -274,7 +253,7 @@ class ScbClient
      */
     private function post(string $tableId, ScbQueryPayload $payload): JsonStatDataset
     {
-        $url = "{$this->baseUrl}/tables/{$tableId}/data";
+        $url = "{$this->baseUrl}/tables/{$tableId}/data?outputFormat=json-stat2";
 
         $response = Http::retry(3, 200)
             ->timeout(30)
@@ -287,7 +266,12 @@ class ScbClient
     }
 
     /**
-     * Parse a JSON-stat2 dataset into normalized observations.
+     * Parse a TAB6689 JSON-stat2 dataset into normalized observations.
+     *
+     * TAB6689 dimension order: Region × Hushallsstallning × Alder × Kon × ContentsCode × Tid.
+     * We request Aensm (single) and Apers (total). For each region/age/sex we emit:
+     *   - SinglePerson with count = Aensm
+     *   - Other with count = Apers − Aensm  (complement so SUM = total)
      *
      * @return Collection<int, ScbObservation>
      */
@@ -300,41 +284,48 @@ class ScbClient
         }
 
         $regionDim = $dataset->dimensions['Region'] ?? null;
+        $statusDim = $dataset->dimensions['Hushallsstallning'] ?? null;
         $ageDim = $dataset->dimensions['Alder'] ?? null;
         $sexDim = $dataset->dimensions['Kon'] ?? null;
-        $statusDim = $dataset->dimensions['HushallsstallningT8'] ?? null;
 
-        if ($regionDim === null || $ageDim === null || $sexDim === null) {
+        if ($regionDim === null || $statusDim === null || $ageDim === null || $sexDim === null) {
             return $observations;
         }
 
         $valueIndex = 0;
 
         foreach ($regionDim->categoryIds as $regionCode) {
-            foreach ($ageDim->categoryIds as $ageCode) {
-                foreach ($sexDim->categoryIds as $sexCode) {
-                    if ($statusDim !== null) {
-                        foreach ($statusDim->categoryIds as $statusCode) {
-                            $value = $dataset->values[$valueIndex++] ?? null;
-                            if ($value !== null) {
-                                $observation = $this->buildObservation(
-                                    $regionCode, $ageCode, $sexCode, $statusCode, (int) $value
-                                );
-                                if ($observation instanceof ScbObservation) {
-                                    $observations->push($observation);
-                                }
-                            }
+            /** @var array<string, array<string, array{single: int, total: int}>> $buffer */
+            $buffer = [];
+
+            foreach ($statusDim->categoryIds as $statusCode) {
+                foreach ($ageDim->categoryIds as $ageCode) {
+                    foreach ($sexDim->categoryIds as $sexCode) {
+                        $value = (int) ($dataset->values[$valueIndex++] ?? 0);
+
+                        if ($statusCode === self::HOUSEHOLD_SINGLE_CODE) {
+                            $buffer[$ageCode][$sexCode]['single'] = $value;
+                        } elseif ($statusCode === self::HOUSEHOLD_TOTAL_CODE) {
+                            $buffer[$ageCode][$sexCode]['total'] = $value;
                         }
-                    } else {
-                        $value = $dataset->values[$valueIndex++] ?? null;
-                        if ($value !== null) {
-                            $observation = $this->buildObservation(
-                                $regionCode, $ageCode, $sexCode, null, (int) $value
-                            );
-                            if ($observation instanceof ScbObservation) {
-                                $observations->push($observation);
-                            }
-                        }
+                    }
+                }
+            }
+
+            foreach ($buffer as $ageCode => $sexData) {
+                foreach ($sexData as $sexCode => $counts) {
+                    $single = $counts['single'] ?? 0;
+                    $total = $counts['total'] ?? 0;
+                    $complement = max(0, $total - $single);
+
+                    $obs = $this->buildObservation($regionCode, (string) $ageCode, (string) $sexCode, self::HOUSEHOLD_SINGLE_CODE, $single);
+                    if ($obs instanceof ScbObservation) {
+                        $observations->push($obs);
+                    }
+
+                    $obs = $this->buildObservation($regionCode, (string) $ageCode, (string) $sexCode, 'AensComplement', $complement);
+                    if ($obs instanceof ScbObservation) {
+                        $observations->push($obs);
                     }
                 }
             }
@@ -389,9 +380,8 @@ class ScbClient
     private function mapHouseholdStatusCode(string $code): ?HouseholdStatus
     {
         return match ($code) {
-            'EP' => HouseholdStatus::SinglePerson,
-            'SB' => HouseholdStatus::Cohabiting,
-            'OV' => HouseholdStatus::Other,
+            self::HOUSEHOLD_SINGLE_CODE => HouseholdStatus::SinglePerson,
+            'AensComplement' => HouseholdStatus::Other,
             default => null,
         };
     }

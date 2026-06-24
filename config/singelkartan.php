@@ -11,9 +11,9 @@ return [
 
     'sync_year' => (int) env('SINGELKARTAN_SYNC_YEAR', 2025),
 
-    'age_min' => (int) env('SINGELKARTAN_AGE_MIN', 18),
+    'age_min' => (int) env('SINGELKARTAN_AGE_MIN', 20),
 
-    'age_max' => (int) env('SINGELKARTAN_AGE_MAX', 80),
+    'age_max' => (int) env('SINGELKARTAN_AGE_MAX', 69),
 
     'premium_mode' => (bool) env('SINGELKARTAN_PREMIUM_MODE', false),
 

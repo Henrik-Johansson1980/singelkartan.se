@@ -51,9 +51,11 @@
                             <li
                                 wire:key="region-{{ $entry->id }}"
                                 x-on:singelkartan:map-hover.window="const on = $event.detail.code === '{{ $entry->region->code }}'; $el.classList.toggle('!bg-surface-100', on); $el.classList.toggle('dark:!bg-surface-700/50', on);"
+                                x-on:singelkartan:map-select.window="const sel = $event.detail.code === '{{ $entry->region->code }}'; $el.classList.toggle('!bg-brand-50', sel); $el.classList.toggle('dark:!bg-brand-900/20', sel); $el.classList.toggle('ring-1', sel); $el.classList.toggle('ring-brand-300', sel); $el.classList.toggle('dark:ring-brand-700', sel);"
                                 @mouseover="$dispatch('singelkartan:list-hover', { code: '{{ $entry->region->code }}' })"
                                 @mouseout="$dispatch('singelkartan:list-hover', { code: null })"
-                                class="flex items-center gap-4 px-6 py-4 hover:bg-surface-50 dark:hover:bg-surface-700/30 transition-colors duration-100 group"
+                                @click="$dispatch('singelkartan:list-click', { code: '{{ $entry->region->code }}' })"
+                                class="flex items-center gap-4 px-6 py-4 hover:bg-surface-50 dark:hover:bg-surface-700/30 transition-colors duration-100 group cursor-pointer"
                             >
                                 {{-- Rank badge --}}
                                 <div class="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold bg-surface-100 text-surface-600 dark:bg-surface-700 dark:text-surface-300">

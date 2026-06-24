@@ -30,7 +30,8 @@ readonly class JsonStatDimension
         if (isset($raw['category']['index']) && is_array($raw['category']['index'])) {
             /** @var array<string, int> $indexMap */
             $indexMap = $raw['category']['index'];
-            $ids = array_keys($indexMap);
+            // PHP casts numeric JSON keys to int; normalise back to strings.
+            $ids = array_map('strval', array_keys($indexMap));
             usort($ids, fn (string $a, string $b): int => $indexMap[$a] <=> $indexMap[$b]);
         } else {
             $ids = array_keys($labels);

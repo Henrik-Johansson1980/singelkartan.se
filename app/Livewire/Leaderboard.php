@@ -34,6 +34,8 @@ class Leaderboard extends Component
         $this->ageMin = (int) request()->query('ageMin', $this->ageMin);
         $this->ageMax = (int) request()->query('ageMax', $this->ageMax);
 
+        // Warm the score cache before building map data so the map is populated on first load.
+        $this->topRegions();
         $this->mapDataJson = $this->buildMapDataJson();
     }
 

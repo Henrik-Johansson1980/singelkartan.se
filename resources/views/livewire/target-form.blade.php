@@ -98,18 +98,20 @@
                 {{-- Min thumb --}}
                 <input
                     type="range"
-                    :min="min" :max="max - 1"
+                    :min="min" :max="max - 5"
+                    step="5"
                     x-model.number="ageMin"
-                    @change="if (ageMin >= ageMax) ageMin = ageMax - 1; $wire.set('ageMin', ageMin)"
+                    @change="if (ageMin >= ageMax) ageMin = ageMax - 5; $wire.set('ageMin', ageMin)"
                     class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 appearance-none bg-transparent cursor-pointer pointer-events-none"
                 />
 
                 {{-- Max thumb --}}
                 <input
                     type="range"
-                    :min="min + 1" :max="max"
+                    :min="min + 5" :max="max"
+                    step="5"
                     x-model.number="ageMax"
-                    @change="if (ageMax <= ageMin) ageMax = ageMin + 1; $wire.set('ageMax', ageMax)"
+                    @change="if (ageMax <= ageMin) ageMax = ageMin + 5; $wire.set('ageMax', ageMax)"
                     class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 appearance-none bg-transparent cursor-pointer pointer-events-none"
                 />
             </div>

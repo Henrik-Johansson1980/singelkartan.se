@@ -82,3 +82,17 @@
 - [x] All views migrated from raw `rose-*`/`slate-*` to `brand-*`/`surface-*`; `<style>` blocks use `var(--color-*)` CSS variables
 - [x] Contrast pass: light-mode muted text lifted from `surface-400` → `surface-600`; dark-mode from `surface-500` → `surface-400`/`300`
 - [x] Commit
+
+## Phase 7 — Dataset completeness + click-to-highlight
+> Goal: full map coverage with real SCB data + persistent selection UX
+
+- [x] Fix SCB sync: `HushallT08CKM` → `TAB6689`, new variable codes, corrected dimension-order parser
+- [x] `upsertRegions()` reads names from `kommuner.geojson` (all 290 instead of 30 hardcoded)
+- [x] Sync pre-computes score_cache for standard age/sex combos after demographics insert
+- [x] `Leaderboard::mount()` warms score cache before `buildMapDataJson()` (fixes grey map on first load)
+- [x] Age slider snaps to 5-year SCB bands (`step=5`, bounds 20–69)
+- [x] Click list item → highlight region on map + persistent popup + flyToBounds
+- [x] `singelkartan:map-select` event syncs selected state back to list row highlight
+- [x] Commit
+
+> **Plan:** `/home/henrik/.claude/plans/the-datasets-does-not-tranquil-river.md`
