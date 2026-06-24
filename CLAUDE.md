@@ -172,7 +172,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Do NOT delete tests without approval.
 
 
-=== commits ===
+</laravel-boost-guidelines>
 
 ## Commits
 
@@ -187,5 +187,3 @@ php artisan test --compact
 ```
 
 Never bypass this with `--no-verify`, `@phpstan-ignore`, skipped tests, or any other suppression. If either step fails, fix the underlying issue and re-run before committing.
-
-</laravel-boost-guidelines>
