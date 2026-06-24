@@ -50,15 +50,15 @@ class TargetForm extends Component
     }
 
     /**
-     * @return array<int, array{value: string, label: string, emoji: string}>
+     * @return array<int, array{value: string, label: string}>
      */
     #[Computed]
     public function sexOptions(): array
     {
         return [
-            ['value' => 'female', 'label' => 'Kvinnor', 'emoji' => '👩'],
-            ['value' => 'male', 'label' => 'Män', 'emoji' => '👨'],
-            ['value' => 'all', 'label' => 'Alla', 'emoji' => '🧑'],
+            ['value' => 'female', 'label' => 'Kvinnor'],
+            ['value' => 'male', 'label' => 'Män'],
+            ['value' => 'all', 'label' => 'Alla'],
         ];
     }
 

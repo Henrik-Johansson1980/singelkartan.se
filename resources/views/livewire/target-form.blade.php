@@ -1,5 +1,8 @@
 <div class="rounded-2xl bg-white dark:bg-slate-800 shadow-lg shadow-slate-200/50 dark:shadow-black/20 p-6 md:p-8 border border-slate-200 dark:border-slate-700">
-    <h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-6">Vem letar du efter? 💘</h2>
+    <h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-6 flex items-center gap-2">
+        <x-heroicon-o-heart class="h-5 w-5 text-rose-500" />
+        Vem letar du efter?
+    </h2>
 
     {{-- Sex selector --}}
     <div class="mb-6">
@@ -15,7 +18,13 @@
                         'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-600 hover:border-slate-400 hover:bg-slate-50 dark:hover:bg-slate-600' => $sex !== $option['value'],
                     ])
                 >
-                    <span>{{ $option['emoji'] }}</span>
+                    @if ($option['value'] === 'female')
+                        <span class="text-base leading-none">♀</span>
+                    @elseif ($option['value'] === 'male')
+                        <span class="text-base leading-none">♂</span>
+                    @else
+                        <x-heroicon-o-users class="h-4 w-4" />
+                    @endif
                     <span>{{ $option['label'] }}</span>
                 </button>
             @endforeach
@@ -75,7 +84,8 @@
     {{-- Loading indicator --}}
     <div wire:loading class="mt-4 flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 animate-pulse">
         <x-heroicon-o-arrow-path class="h-4 w-4 animate-spin" />
-        Letar singlar... 🔍
+        <x-heroicon-o-magnifying-glass class="h-4 w-4" />
+        Letar singlar...
     </div>
 </div>
 

@@ -1,7 +1,7 @@
 <div>
     @if ($topRegions->isEmpty())
         <div class="rounded-2xl bg-white dark:bg-slate-800 shadow-lg shadow-slate-200/50 dark:shadow-black/20 p-8 border border-slate-200 dark:border-slate-700 text-center">
-            <p class="text-4xl mb-3">🔍</p>
+            <x-heroicon-o-magnifying-glass class="h-10 w-10 mx-auto mb-3 text-slate-400 dark:text-slate-500" />
             <p class="text-slate-600 dark:text-slate-300 font-medium">Inga data hittades för det valda filtret.</p>
             <p class="text-sm text-slate-400 dark:text-slate-500 mt-1">Prova ett annat åldersspann eller kön.</p>
         </div>
@@ -10,8 +10,9 @@
 
             {{-- Header --}}
             <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80">
-                <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">
-                    💑 Topp {{ $topRegions->count() }} singeltätaste kommuner
+                <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                    <x-heroicon-o-heart class="h-5 w-5 text-rose-500" />
+                    Topp {{ $topRegions->count() }} singeltätaste kommuner
                 </h2>
                 <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
                     {{ $this->sexLabel() }}, {{ $ageMin }}–{{ $ageMax }} år &nbsp;·&nbsp; Källa: SCB
@@ -53,11 +54,7 @@
                                     'bg-orange-100 text-orange-600 dark:bg-orange-900/40 dark:text-orange-300' => $index === 2,
                                     'bg-slate-100 text-slate-400 dark:bg-slate-700 dark:text-slate-400' => $index > 2,
                                 ])>
-                                    @if ($index === 0) 🥇
-                                    @elseif ($index === 1) 🥈
-                                    @elseif ($index === 2) 🥉
-                                    @else {{ $index + 1 }}
-                                    @endif
+                                    {{ $index + 1 }}
                                 </div>
 
                                 {{-- Region name --}}
@@ -105,7 +102,8 @@
 
     {{-- Loading overlay --}}
     <div wire:loading.delay class="mt-4 text-center text-slate-400 dark:text-slate-500 text-sm animate-pulse">
-        Letar singlar... 🔍
+        <x-heroicon-o-magnifying-glass class="inline h-4 w-4 mr-1" />
+        Letar singlar...
     </div>
 </div>
 
