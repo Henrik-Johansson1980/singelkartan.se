@@ -53,9 +53,7 @@
                 :min="min" :max="max - 1"
                 x-model.number="ageMin"
                 @change="if (ageMin >= ageMax) ageMin = ageMax - 1; $wire.set('ageMin', ageMin)"
-                class="absolute inset-0 w-full h-2 appearance-none bg-transparent cursor-pointer range-thumb-rose"
-                style="pointer-events: none"
-                :style="'pointer-events: ' + (ageMin >= ageMax - 1 ? 'auto' : 'auto')"
+                class="absolute inset-0 w-full h-2 appearance-none bg-transparent cursor-pointer pointer-events-none"
             />
 
             {{-- Max thumb --}}
@@ -64,7 +62,7 @@
                 :min="min + 1" :max="max"
                 x-model.number="ageMax"
                 @change="if (ageMax <= ageMin) ageMax = ageMin + 1; $wire.set('ageMax', ageMax)"
-                class="absolute inset-0 w-full h-2 appearance-none bg-transparent cursor-pointer"
+                class="absolute inset-0 w-full h-2 appearance-none bg-transparent cursor-pointer pointer-events-none"
             />
         </div>
 
@@ -105,5 +103,6 @@ input[type="range"]::-moz-range-thumb {
     border: 2px solid white;
     box-shadow: 0 2px 6px rgba(244, 63, 94, 0.4);
     cursor: pointer;
+    pointer-events: all;
 }
 </style>
