@@ -7,13 +7,13 @@
     {{-- Level toggle --}}
     <div class="mb-6">
         <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">Kartans detaljnivå</label>
-        <div class="flex gap-2">
+        <div class="grid grid-cols-2 gap-2">
             <button
                 type="button"
                 wire:click="setLevel('kommun')"
                 @class([
-                    'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-150 border',
-                    'bg-brand-500 text-white border-brand-500 shadow-md shadow-brand-300/40 scale-105' => $level === 'kommun',
+                    'flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-150 border',
+                    'bg-brand-600 text-white border-brand-600' => $level === 'kommun',
                     'bg-white dark:bg-surface-700 text-surface-700 dark:text-surface-200 border-surface-200 dark:border-surface-600 hover:border-surface-400 hover:bg-surface-50 dark:hover:bg-surface-600' => $level !== 'kommun',
                 ])
             >
@@ -24,8 +24,8 @@
                 type="button"
                 wire:click="setLevel('deso')"
                 @class([
-                    'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-150 border',
-                    'bg-brand-500 text-white border-brand-500 shadow-md shadow-brand-300/40 scale-105' => $level === 'deso',
+                    'flex flex-1 items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-150 border',
+                    'bg-brand-600 text-white border-brand-600' => $level === 'deso',
                     'bg-white dark:bg-surface-700 text-surface-700 dark:text-surface-200 border-surface-200 dark:border-surface-600 hover:border-surface-400 hover:bg-surface-50 dark:hover:bg-surface-600' => $level !== 'deso',
                 ])
             >
@@ -33,6 +33,7 @@
                 DeSO-områden
             </button>
         </div>
+
         @if ($level === 'deso')
             <p class="mt-2 text-xs text-surface-600 dark:text-surface-400">
                 DeSO-data saknar köns- och åldersuppdelning — visar total singelandel per område.
@@ -45,14 +46,14 @@
         {{-- Sex selector --}}
         <div class="mb-6">
             <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">Kön</label>
-            <div class="flex gap-2 flex-wrap">
+            <div class="grid grid-cols-3 gap-2">
                 @foreach ($this->sexOptions as $option)
                     <button
                         type="button"
                         wire:click="$set('sex', '{{ $option['value'] }}')"
                         @class([
-                            'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-150 border',
-                            'bg-brand-500 text-white border-brand-500 shadow-md shadow-brand-300/40 scale-105' => $sex === $option['value'],
+                            'flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-150 border',
+                            'bg-brand-600 text-white border-brand-600' => $sex === $option['value'],
                             'bg-white dark:bg-surface-700 text-surface-700 dark:text-surface-200 border-surface-200 dark:border-surface-600 hover:border-surface-400 hover:bg-surface-50 dark:hover:bg-surface-600' => $sex !== $option['value'],
                         ])
                     >

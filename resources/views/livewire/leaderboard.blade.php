@@ -56,13 +56,7 @@
                                 class="flex items-center gap-4 px-6 py-4 hover:bg-surface-50 dark:hover:bg-surface-700/30 transition-colors duration-100 group"
                             >
                                 {{-- Rank badge --}}
-                                <div @class([
-                                    'shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold',
-                                    'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300' => $index === 0,
-                                    'bg-surface-100 text-surface-600 dark:bg-surface-700/50 dark:text-surface-300' => $index === 1,
-                                    'bg-orange-100 text-orange-600 dark:bg-orange-900/40 dark:text-orange-300' => $index === 2,
-                                    'bg-surface-100 text-surface-600 dark:bg-surface-700 dark:text-surface-300' => $index > 2,
-                                ])>
+                                <div class="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold bg-surface-100 text-surface-600 dark:bg-surface-700 dark:text-surface-300">
                                     {{ $index + 1 }}
                                 </div>
 
