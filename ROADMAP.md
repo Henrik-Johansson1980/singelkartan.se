@@ -3,7 +3,8 @@
 ## Phase 1 — Foundation ✅
 > Goal: working toplist on seeded data, all quality gates green
 
-- [x] Tooling: PHPStan → level 8, composer script `stan` added *(rector not installed — skipped)*
+- [x] Tooling: PHPStan → level 8 via Larastan, Rector (PHP 8.5 ruleset), `format` + `format:check` composer scripts
+- [x] `prompts/FORMAT.md` + `CLAUDE.md` Commits rule — format pipeline must be green before every commit
 - [x] Enums: `Sex`, `HouseholdStatus`, `RegionLevel`
 - [x] Migrations: `regions`, `demographics`, `postal_lookups`, `score_cache`
 - [x] Models: `Region`, `Demographic`, `PostalLookup`, `ScoreCache` (typed, with casts)
