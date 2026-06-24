@@ -40,7 +40,7 @@
                         @foreach ($topRegions as $index => $entry)
                             <li
                                 wire:key="region-{{ $entry->id }}"
-                                x-on:singelkartan:map-hover.window="$el.classList.toggle('!bg-rose-100/70 dark:!bg-rose-900/40', $event.detail.code === '{{ $entry->region->code }}')"
+                                x-on:singelkartan:map-hover.window="const on = $event.detail.code === '{{ $entry->region->code }}'; $el.classList.toggle('!bg-rose-100/70', on); $el.classList.toggle('dark:!bg-rose-900/40', on);"
                                 @mouseover="$dispatch('singelkartan:list-hover', { code: '{{ $entry->region->code }}' })"
                                 @mouseout="$dispatch('singelkartan:list-hover', { code: null })"
                                 class="flex items-center gap-4 px-6 py-4 hover:bg-rose-50/60 dark:hover:bg-rose-900/20 transition-colors duration-100 group"
