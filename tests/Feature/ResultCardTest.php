@@ -17,7 +17,7 @@ it('initialises with default sex and age range', function (): void {
     Livewire::test(ResultCard::class)
         ->assertSet('sex', 'female')
         ->assertSet('ageMin', 25)
-        ->assertSet('ageMax', 34);
+        ->assertSet('ageMax', 35);
 });
 
 it('shows the top result region name and percentage', function (): void {
@@ -25,7 +25,7 @@ it('shows the top result region name and percentage', function (): void {
     ScoreCache::factory()->for($region)->create([
         'sex' => Sex::Female,
         'age_min' => 25,
-        'age_max' => 34,
+        'age_max' => 35,
         'score' => 80.0,
         'single_count' => 400,
         'total_count' => 500,

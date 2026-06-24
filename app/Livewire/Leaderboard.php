@@ -21,7 +21,7 @@ class Leaderboard extends Component
 
     public int $ageMin = 25;
 
-    public int $ageMax = 34;
+    public int $ageMax = 35;
 
     public bool $isLoading = false;
 
@@ -102,6 +102,17 @@ class Leaderboard extends Component
             ->where('age_min', $this->ageMin)
             ->where('age_max', $this->ageMax)
             ->get();
+
+        if ($entries->isEmpty()) {
+            app(SingleScoreService::class)->computeTopRegions($sex, $this->ageMin, $this->ageMax, 290);
+
+            $entries = ScoreCache::with('region')
+                ->whereHas('region', fn ($q) => $q->where('level', RegionLevel::Kommun->value))
+                ->where('sex', $sex->value)
+                ->where('age_min', $this->ageMin)
+                ->where('age_max', $this->ageMax)
+                ->get();
+        }
 
         return $this->encodeMapData($entries);
     }

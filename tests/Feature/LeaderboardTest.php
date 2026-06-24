@@ -23,7 +23,7 @@ it('displays ranked regions from the score cache', function (): void {
     ScoreCache::factory()->for($region)->create([
         'sex' => Sex::Female,
         'age_min' => 25,
-        'age_max' => 34,
+        'age_max' => 35,
         'score' => 65.0,
         'single_count' => 300,
         'total_count' => 500,
@@ -40,7 +40,7 @@ it('updates displayed regions when target-changed event is dispatched', function
     ScoreCache::factory()->for($femaleRegion)->create([
         'sex' => Sex::Female,
         'age_min' => 25,
-        'age_max' => 34,
+        'age_max' => 35,
         'score' => 70.0,
     ]);
 
@@ -64,7 +64,7 @@ it('reflects updated sex and age props after target-changed', function (): void 
     Livewire::test(Leaderboard::class)
         ->assertSet('sex', 'female')
         ->assertSet('ageMin', 25)
-        ->assertSet('ageMax', 34)
+        ->assertSet('ageMax', 35)
         ->dispatch('target-changed', level: 'kommun', sex: 'male', ageMin: 30, ageMax: 39)
         ->assertSet('sex', 'male')
         ->assertSet('ageMin', 30)
@@ -76,13 +76,13 @@ it('shows the sex label and age range in the header', function (): void {
     ScoreCache::factory()->for($region)->create([
         'sex' => Sex::Female,
         'age_min' => 25,
-        'age_max' => 34,
+        'age_max' => 35,
         'score' => 50.0,
     ]);
 
     Livewire::test(Leaderboard::class)
         ->assertSee('25')
-        ->assertSee('34');
+        ->assertSee('35');
 });
 
 it('limits the leaderboard to at most 10 entries', function (): void {
@@ -92,7 +92,7 @@ it('limits the leaderboard to at most 10 entries', function (): void {
         ScoreCache::factory()->for($region)->create([
             'sex' => Sex::Female,
             'age_min' => 25,
-            'age_max' => 34,
+            'age_max' => 35,
             'score' => 50.0 + $index,
         ]);
     }

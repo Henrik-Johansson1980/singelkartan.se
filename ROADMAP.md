@@ -106,3 +106,12 @@
 - [x] Region search field in filters panel (between level toggle and sex/age filters): client-side Alpine filter via `singelkartan:search` window event, no Livewire round-trip
 - [x] DeSO info popover: ℹ icon in leaderboard header (DeSO mode only) explaining the code format (kommunkod + tätortstyp + löpnummer)
 - [x] Commit
+
+## Phase 9 — Slider map reactivity fix ✅
+> Goal: age sliders reliably trigger map updates for all filter combinations
+
+- [x] Fix slider `$wire.entangle` conflict: replace with PHP-initialised Alpine values + `$wire.$watch` for server correction feedback
+- [x] Fix `buildMapDataJson` missing fallback: add on-demand `computeTopRegions` call when cache is empty (mirrors existing `topRegions()` logic)
+- [x] Precompute all 135 slider-aligned score combinations (45 age ranges × 3 sexes) via `singelkartan:sync --cache-scores`; added `--cache-scores` flag for future re-seeding
+- [x] Default `ageMax` 34 → 35 (aligned to slider step-5 grid); `Sex::All` now included in precomputed ranges
+- [x] Commit

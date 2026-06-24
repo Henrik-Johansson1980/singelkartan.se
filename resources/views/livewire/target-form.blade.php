@@ -98,10 +98,14 @@
         {{-- Age range slider --}}
         <div
             x-data="{
-                ageMin: $wire.entangle('ageMin'),
-                ageMax: $wire.entangle('ageMax'),
+                ageMin: {{ $ageMin }},
+                ageMax: {{ $ageMax }},
                 min: {{ $ageAbsMin }},
                 max: {{ $ageAbsMax }},
+                init() {
+                    this.$wire.$watch('ageMin', v => { this.ageMin = v })
+                    this.$wire.$watch('ageMax', v => { this.ageMax = v })
+                }
             }"
             class="mb-2"
         >

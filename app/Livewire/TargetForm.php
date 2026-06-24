@@ -20,8 +20,8 @@ class TargetForm extends Component
     #[Url(history: true, except: 25)]
     public int $ageMin = 25;
 
-    #[Url(history: true, except: 34)]
-    public int $ageMax = 34;
+    #[Url(history: true, except: 35)]
+    public int $ageMax = 35;
 
     public int $ageAbsMin;
 

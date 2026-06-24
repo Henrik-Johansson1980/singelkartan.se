@@ -27,19 +27,19 @@ it('has female sex and default age range on mount', function (): void {
     Livewire::test(TargetForm::class)
         ->assertSet('sex', 'female')
         ->assertSet('ageMin', 25)
-        ->assertSet('ageMax', 34);
+        ->assertSet('ageMax', 35);
 });
 
 it('dispatches target-changed when sex is updated', function (): void {
     Livewire::test(TargetForm::class)
         ->set('sex', 'male')
-        ->assertDispatched('target-changed', sex: 'male', ageMin: 25, ageMax: 34);
+        ->assertDispatched('target-changed', sex: 'male', ageMin: 25, ageMax: 35);
 });
 
 it('dispatches target-changed when ageMin is updated', function (): void {
     Livewire::test(TargetForm::class)
         ->set('ageMin', 30)
-        ->assertDispatched('target-changed', sex: 'female', ageMin: 30, ageMax: 34);
+        ->assertDispatched('target-changed', sex: 'female', ageMin: 30, ageMax: 35);
 });
 
 it('dispatches target-changed when ageMax is updated', function (): void {
@@ -50,8 +50,8 @@ it('dispatches target-changed when ageMax is updated', function (): void {
 
 it('clamps ageMin below ageMax when they would cross', function (): void {
     Livewire::test(TargetForm::class)
-        ->set('ageMin', 34) // equal to ageMax
-        ->assertSet('ageMin', 33); // clamped to ageMax - 1
+        ->set('ageMin', 35) // equal to ageMax (default is 35)
+        ->assertSet('ageMin', 34); // clamped to ageMax - 1
 });
 
 it('clamps ageMax above ageMin when they would cross', function (): void {
@@ -71,7 +71,7 @@ it('shows all three sex options', function (): void {
 it('has the expected default age range', function (): void {
     Livewire::test(TargetForm::class)
         ->assertSet('ageMin', 25)
-        ->assertSet('ageMax', 34);
+        ->assertSet('ageMax', 35);
 });
 
 it('shows the absolute age bounds in the track labels', function (): void {

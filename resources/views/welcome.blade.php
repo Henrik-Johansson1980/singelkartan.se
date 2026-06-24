@@ -6,7 +6,7 @@
         @php
             $ogSex = request()->query('sex', 'female');
             $ogAgeMin = (int) request()->query('ageMin', 25);
-            $ogAgeMax = (int) request()->query('ageMax', 34);
+            $ogAgeMax = (int) request()->query('ageMax', 35);
             $ogSexLabel = \App\Enums\Sex::tryFrom($ogSex)?->label() ?? 'Alla';
             $ogDescription = "Singeltätaste kommunerna för {$ogSexLabel}, {$ogAgeMin}–{$ogAgeMax} år — baserat på SCB:s statistik.";
             $ogImageUrl = route('og-image', ['sex' => $ogSex, 'ageMin' => $ogAgeMin, 'ageMax' => $ogAgeMax]);

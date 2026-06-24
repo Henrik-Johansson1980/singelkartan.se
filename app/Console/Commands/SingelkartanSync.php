@@ -18,7 +18,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Carbon;
 
-#[Signature('singelkartan:sync {--dry-run : Fetch and parse but do not write to database} {--deso : Also sync DeSO areas}')]
+#[Signature('singelkartan:sync {--dry-run : Fetch and parse but do not write to database} {--deso : Also sync DeSO areas} {--cache-scores : Recompute score cache for all standard ranges without re-fetching SCB data}')]
 #[Description('Sync demographic data from SCB PxWebApi 2 into the demographics table.')]
 class SingelkartanSync extends Command
 {
@@ -30,6 +30,14 @@ class SingelkartanSync extends Command
 
     public function handle(ScbClient $client): int
     {
+        if ((bool) $this->option('cache-scores')) {
+            $this->info('Recomputing score cache for all standard age/sex ranges...');
+            $this->computeStandardScores();
+            $this->info('Done.');
+
+            return Command::SUCCESS;
+        }
+
         $isDryRun = (bool) $this->option('dry-run');
         $year = (int) config('singelkartan.sync_year');
 
@@ -117,13 +125,20 @@ class SingelkartanSync extends Command
     private function computeStandardScores(): void
     {
         $service = app(SingleScoreService::class);
-        $standardRanges = [
-            [20, 24], [25, 29], [30, 34], [35, 39], [40, 44],
-            [45, 49], [50, 54], [55, 59], [60, 64], [65, 69],
-            [20, 29], [25, 34], [30, 39], [35, 44], [40, 49],
-        ];
+        $sliderMin = (int) config('singelkartan.age_min');
+        $sliderMax = (int) config('singelkartan.age_max');
 
-        foreach ([Sex::Female, Sex::Male] as $sex) {
+        // Generate all combinations the age slider can produce (step 5).
+        // Min thumb: [sliderMin, sliderMax-5] in steps of 5.
+        // Max thumb: [min+5, sliderMax] in steps of 5 (snaps to nearest multiple of 5 ≤ sliderMax).
+        $standardRanges = [];
+        for ($lo = $sliderMin; $lo < $sliderMax - 4; $lo += 5) {
+            for ($hi = $lo + 5; $hi <= $sliderMax; $hi += 5) {
+                $standardRanges[] = [$lo, $hi];
+            }
+        }
+
+        foreach ([Sex::Female, Sex::Male, Sex::All] as $sex) {
             foreach ($standardRanges as [$ageMin, $ageMax]) {
                 $service->computeTopRegions($sex, $ageMin, $ageMax, 290);
                 $this->line("  Computed {$sex->value} {$ageMin}–{$ageMax}");
@@ -231,7 +246,7 @@ class SingelkartanSync extends Command
     {
         $path = public_path('geojson/deso.geojson');
 
-        /** @var array{features: list<array{properties: array{deso: string}}>} $geojson */
+        /** @var array{features: list<array{properties: array{desokod: string}}>} $geojson */
         $geojson = json_decode((string) file_get_contents($path), associative: true);
 
         return array_map(
@@ -248,10 +263,10 @@ class SingelkartanSync extends Command
         /** @var array{features: list<array{properties: array{id: string}}>} $geojson */
         $geojson = json_decode((string) file_get_contents($geojsonPath), associative: true);
 
-        return array_values(array_map(
+        return array_map(
             fn (array $f): string => $f['properties']['id'],
             $geojson['features'],
-        ));
+        );
     }
 
     private function upsertRegions(): void

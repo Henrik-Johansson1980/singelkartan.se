@@ -21,7 +21,7 @@ class ResultCard extends Component
 
     public int $ageMin = 25;
 
-    public int $ageMax = 34;
+    public int $ageMax = 35;
 
     public function mount(): void
     {
