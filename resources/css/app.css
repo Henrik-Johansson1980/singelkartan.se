@@ -26,3 +26,11 @@
 }
 
 @variant dark (&:where(.dark, .dark *));
+
+.leaflet-container {
+    background: white;
+}
+
+.dark .leaflet-container {
+    background: var(--color-slate-800);
+}

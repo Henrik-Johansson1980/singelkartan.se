@@ -10,7 +10,8 @@ const PALETTE = [
     '#db2777', // pink-600
 ]
 
-const COLOR_NO_DATA = '#e5e7eb'
+const COLOR_NO_DATA_LIGHT = '#cbd5e1'
+const COLOR_NO_DATA_DARK  = '#e5e7eb'
 
 const GEOJSON_URLS = {
     kommun: '/geojson/kommuner.geojson',
@@ -115,13 +116,17 @@ export default function choroplethMap() {
             this.geojsonCache[level] = await res.json()
         },
 
+        isDark() {
+            return document.documentElement.classList.contains('dark')
+        },
+
         styleFor(feature, level) {
             const prop = CODE_PROP[level]
             const entry = this.scores[feature.properties[prop]]
             return {
-                fillColor: entry ? scoreColor(entry.score, this.breaks) : COLOR_NO_DATA,
-                fillOpacity: 0.75,
-                color: '#ffffff',
+                fillColor: entry ? scoreColor(entry.score, this.breaks) : (this.isDark() ? COLOR_NO_DATA_DARK : COLOR_NO_DATA_LIGHT),
+                fillOpacity: this.isDark() ? 0.75 : 1,
+                color: this.isDark() ? '#ffffff' : '#94a3b8',
                 weight: level === 'deso' ? 0.3 : 0.5,
             }
         },
