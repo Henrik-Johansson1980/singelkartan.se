@@ -31,6 +31,7 @@
 - [x] Min-count areas greyed out
 - [x] Hover/click: tooltip with score, single ratio, count
 - [x] Synced hover between toplist rows and map regions
+- [x] Replace all emoji icons with heroicons (`blade-heroicons`) and Unicode gender symbols (♀ ♂)
 - [x] Commit
 
 ## Phase 3 — Sharable Result Card
